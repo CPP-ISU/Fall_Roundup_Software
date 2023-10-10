@@ -1,6 +1,6 @@
 from flask import Flask,render_template, send_file
 from Ranking import stock_rank
-from Pull_render import get_pull, get_last5
+from Pull_render import get_pull, get_last5, tractor_name, teams
 app=Flask(__name__)
 app.static_folder='images'
 
@@ -11,10 +11,18 @@ def hello():
 
     return 'World!'
 
+@app.route('/')
+def home_page():
+    data=teams()
+    return render_template('home_page.html',data=data)
+
 @app.route('/html')
 def html():
     return render_template('temp.html')
 
+@app.route('/tractor/<int:tractor_id>')
+def tractor_page(tractor_id):
+    return str(tractor_name(tractor_id))
 
 page_data = [
     {"title": "Page 1", "content": "Content for Page 1"},
@@ -22,6 +30,10 @@ page_data = [
     {"title": "Page 3", "content": "Content for Page 3"},
 ]
 
+@app.route('/tractor/<tractor>')
+def tractor(tractor):
+    # Your code to handle the tractor page
+    return f"This is the {tractor} page for."
 
 @app.route('/page/<int:page_id>')
 def display_page(page_id):
@@ -74,5 +86,5 @@ def serve_image():
     return send_file(image_path, mimetype='image/png')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True,host="192.168.1.139")
 
