@@ -33,7 +33,7 @@ mycursor.execute("SELECT * FROM teams")
 myresult = mycursor.fetchall()
 team_ab={"iowa":"isu"}
 for x,i in zip(myresult,range(1000)):
-  name,abbreveation,R,G,B=x
+  team_id,name,abbreveation=x
   team_ab[name]=abbreveation
 
 def get_dist(pull):

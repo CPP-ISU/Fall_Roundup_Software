@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Home Page</title>
+    </head>
+    <body>
+        <h1>Teams</h1>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>School</th>
+                    <th>Tractors</th>
+                    <th>Pulls</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data %}
+                <tr>
+                    <td>{{row['team_name']}}</td>
+                    <td>
+                        <ul>
+                            {% for tractor in row['tractors'] %}
+                            <li><a href="{{ url_for('tractor', tractor=tractor['tractor_id']) }}">{{ tractor['tractor_name'] }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </body>
+</html>

@@ -17,7 +17,7 @@ mycursor = mydb.cursor(buffered=True)
 
 def render_pull(id,team_name,tractor,hook):
 
-    mycursor.execute("SELECT * FROM pull_data where pull_num='"+str(id)+"'")
+    mycursor.execute("SELECT * FROM pull_data where pull_id='"+str(id)+"'")
     dist=[]
     speed=[]
     force=[]
@@ -83,31 +83,65 @@ def render_pull(id,team_name,tractor,hook):
 
     
 def get_pull(id):
-    mycursor.execute("SELECT * FROM stock_results where id='"+str(id)+"'")
+    mycursor.execute("SELECT * FROM all_pull_results where pull_id='"+str(id)+"'")
     myresult = mycursor.fetchall()
     if len(myresult)==0:
         return 0
 
     for i,x in enumerate(myresult):
-        id_out,team,tractor,distance,speed=x
-        dict={"id":id,"team":team,"tractor":tractor,"distance":distance,"speed":speed,"hook_num":1}
-    mycursor.execute("SELECT * FROM stock_results where team='"+str(dict["team"])+"' and tractor='"+str(dict["tractor"])+"'")
+        id_out,pull_class,team_id,tractor_id,distance,speed=x
+        dict={"id":id,"team":team_id,"tractor":tractor_id,"distance":distance,"speed":speed,"hook_num":1}
+    mycursor.execute("SELECT * FROM all_pull_results where team_id='"+str(dict["team"])+"' and tractor_id='"+str(dict["tractor"])+"'")
     for i,x in enumerate(myresult):
-        id_out,team,tractor,distance,speed=x
+        id_out,pull_class,team_id,tractor_id,distance,speed=x
         if (id_out==id):
             dict["hook_num"]=(1+i)
 
     return dict
+
+def tractor_name(tractor_id):
+  localdb=mysql.connector.connect(
+  host="localhost",
+  user="root",
+  password="darkcyde15",
+  database='pulls'
+    )
+  localcursor=localdb.cursor()
+  localcursor.execute("SELECT tractor_num FROM tractors where tractor_id="+str(tractor_id))
+  result=localcursor.fetchone()
+  return result
         
 def get_last5():
-    mycursor.execute("SELECT * FROM stock_results")
+    mycursor.execute("SELECT * FROM all_pull_results")
     myresult = mycursor.fetchall()
     result=[]
     for x in myresult[-5:]:
-        id_out,team,tractor,distance,speed=x
+        id_out,pull_class,team_id,tractor_id,distance,speed=x
         dict={"id":id_out,"team":team,"tractor":tractor,"distance":distance,"speed":speed,"hook_num":1}
         result.append(dict)
     return result
+
+def team_tractors(team_id):
+    mycursor.execute("SELECT tractor_id,tractor_num FROM tractors where team_id="+str(team_id))
+    myresult = mycursor.fetchall()
+    tractors=[]
+    for result in myresult:
+        tractor_id,tractor_num=result
+        tractor={"tractor_id":tractor_id,"tractor_name":tractor_num}
+        tractors.append(tractor)
+    return tractors
+
+def teams():
+    teams=[]
+    mycursor.execute("SELECT team_name , team_abv, team_id FROM teams")
+    myresult = mycursor.fetchall()
+    for result in myresult:
+        team_name,team_abrev,team_id=result
+        tractors=team_tractors(team_id)
+        team={"team_name":team_name,"team_abrev":team_abrev,"tractors":tractors}
+        teams.append(team)
+    return teams
+
 
 
 
