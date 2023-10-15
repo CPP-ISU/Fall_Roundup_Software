@@ -5,10 +5,9 @@ import matplotlib.pyplot as plt
 from scipy.signal import savgol_filter
 import numpy as np
 mydb = mysql.connector.connect(
-  host="localhost",
-  user="root",
-  password="darkcyde15",
-  database='pulls'
+  host="iqs-fallroundup.cvjcxenhbni5.us-east-2.rds.amazonaws.com",
+  user="admin",
+  password="darkcyde15"
 )
 
 mycursor = mydb.cursor(buffered=True)

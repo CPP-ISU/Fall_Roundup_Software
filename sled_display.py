@@ -5,10 +5,10 @@ from PyQt5.QtQml import QQmlApplicationEngine
 import mysql.connector
 
 mydb = mysql.connector.connect(
-  host="localhost",
-  user="root",
+  host="iqs-fallroundup.cvjcxenhbni5.us-east-2.rds.amazonaws.com",
+  user="admin",
   password="darkcyde15",
-  database='pulls'
+  database='fallrounudp'
 )
 
 mycursor = mydb.cursor()
@@ -34,10 +34,10 @@ class DataModel(QObject):
     @pyqtSlot()
     def update_list(self):
         localdb = mysql.connector.connect(
-        host="localhost",
-        user="root",
+        host="iqs-fallroundup.cvjcxenhbni5.us-east-2.rds.amazonaws.com",
+        user="admin",
         password="darkcyde15",
-        database='pulls'
+        database='fallrounudp'
         )
         localcursor = localdb.cursor()
         localcursor.execute("SELECT * FROM teams")
@@ -51,7 +51,7 @@ class DataModel(QObject):
             tractor_result=localcursor.fetchall()
             for i in tractor_result:
                 pulls=[]
-                tractor_id,team_id,tractor_num=i
+                tractor_id,team_id,tractor_num,tractor_name=i
                 localcursor.execute("SELECT pull_id, final_dist FROM all_pull_results where tractor_id="+str(tractor_id))
                 pullresult = localcursor.fetchall()
                 for j,x in enumerate(pullresult):
