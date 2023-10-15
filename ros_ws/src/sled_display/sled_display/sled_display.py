@@ -4,6 +4,7 @@ from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtQml import QQmlApplicationEngine
 import mysql.connector
 import rclpy
+from sled_msgs.msg import Currentpull
 
 
 mydb = mysql.connector.connect(
@@ -14,12 +15,15 @@ mydb = mysql.connector.connect(
 )
 
 mycursor = mydb.cursor()
+rclpy.init()
+node=rclpy.create_node('sled_display')
 
 class DataModel(QObject):
     def __init__(self):
         super().__init__()
         self.update_list()
         #print(self._data)
+        self.pull_pub = node.create_publisher(Currentpull,'current_pull',10)
         
 
     @pyqtProperty("QVariantList")
@@ -73,11 +77,34 @@ class DataModel(QObject):
 
     @pyqtSlot(list)
     def start_pull(self,data):
+        localdb = mysql.connector.connect(
+        host="iqs-fallroundup.cvjcxenhbni5.us-east-2.rds.amazonaws.com",
+        user="admin",
+        password="darkcyde15",
+        database='fallrounudp'
+        )
+        localcursor = localdb.cursor()
         print(f"pull started {data}")
+        pull=Currentpull()
+        if data[3]==0:
+            sql="INSERT INTO all_pull_results (class, team_id, tractor_id) VALUES (%s, %s, %s)"
+            values=(data[0], data[1], data[2])
+            localcursor.execute(sql,values)
+            localdb.commit()
+            localcursor.execute("SELECT max(pull_id) FROM all_pull_results")
+            x=localcursor.fetchone()
+            print(x[0])
+            pull.pullid=int(x[0])
+        else:
+            pull.pullid=data[3]
+        self.pull_pub.publish(pull)
+
+            
+        
 
     dataChanged = pyqtSignal()
 
-if __name__ == "__main__":
+def main():
     app = QGuiApplication(sys.argv)
     
     # Create a DataModel instance to hold the array data
@@ -88,7 +115,7 @@ if __name__ == "__main__":
     
 
     # Load the QML file
-    engine.load("display_qml/sled_display.qml")
+    engine.load("src/sled_display/sled_display/QML/sled_display.qml")
 
     if not engine.rootObjects():
         sys.exit(-1)
