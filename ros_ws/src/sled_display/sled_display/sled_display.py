@@ -46,14 +46,14 @@ class DataModel(QObject):
         database='fallrounudp'
         )
         localcursor = localdb.cursor()
-        localcursor.execute("SELECT * FROM teams")
+        localcursor.execute("SELECT team_id, team_name, team_abv FROM teams")
         myresult = localcursor.fetchall()
         self._data = []
 
         for result in myresult:
             tractors=[]
             team_id,team_name,team_abrev=result
-            localcursor.execute("SELECT * FROM tractors where team_id="+str(team_id))
+            localcursor.execute("SELECT tractor_id, team_id,tractor_num FROM tractors where team_id="+str(team_id))
             tractor_result=localcursor.fetchall()
             for i in tractor_result:
                 pulls=[]
