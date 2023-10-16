@@ -35,17 +35,17 @@ class MyNode(Node):
         self.get_logger().info('My Node is running.')
         self.img_sub = self.create_subscription(Image,'camera_image',self.img_callback,10)
         self.track_state_sub = self.create_subscription(Currentpull,'track_state',self.track_state_callback,10)
+        self.sled_timer = self.create_timer(.1,self.sled_timer)
         self.cv_bridge=CvBridge()
         options=DetectorOptions(quad_blur=1.0)
         self.Detector=Detector(options=options)
         self.loss_timer=self.create_timer(.25,self.loss_timer_callback)
         self.last_tag=time.time()
         self.track_state=0
+        self.dist=0.0
 
-    def sled_callback(self,msg):
-        print("sled_callback")
-        dist=msg.distance
-        sled_pos=[dist,0,0]
+    def sled_timer(self):
+        sled_pos=[self.dist,0,0]
         tractor_position=[sled_pos[0]+tractor_offset,sled_pos[1],sled_pos[2]]
         dx=tractor_position[0]-camera_position[0]
         dy=tractor_position[1]-camera_position[1]
@@ -60,6 +60,11 @@ class MyNode(Node):
         print(zoom)
         if time.time()-self.last_tag>=.25 and self.track_state==1:
             cam.abs_pos(18,18,math.degrees(tractor_cam_angle[1]),math.degrees(tractor_cam_angle[2]))
+
+    def sled_callback(self,msg):
+        print("sled_callback")
+        self.dist=msg.distance
+        
         #time.sleep(.1)
         #cam.zoom_pos(zoom)
     
@@ -68,6 +73,7 @@ class MyNode(Node):
         print(self.track_state)
         if self.track_state==2:
             cam.abs_pos(18,18,0,0)
+            cam.zoom(-3)
         if self.track_state==3:
             cam.abs_pos(18,18,-45,0)
 
