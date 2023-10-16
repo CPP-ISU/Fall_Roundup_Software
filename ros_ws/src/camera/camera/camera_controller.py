@@ -11,6 +11,7 @@ import cv2 as cv
 from cv_bridge import CvBridge
 from sensor_msgs.msg import Image
 from apriltag import Detector, DetectorOptions
+from sled_msgs.msg import Currentpull
 
 camera_position=[100,50,0]
 camera_rotation=90
@@ -33,11 +34,13 @@ class MyNode(Node):
         self.sled_sub = self.create_subscription(Sled,'sled',self.sled_callback,10)
         self.get_logger().info('My Node is running.')
         self.img_sub = self.create_subscription(Image,'camera_image',self.img_callback,10)
+        self.track_state_sub = self.create_subscription(Currentpull,'track_state',self.track_state_callback,10)
         self.cv_bridge=CvBridge()
         options=DetectorOptions(quad_blur=1.0)
         self.Detector=Detector(options=options)
         self.loss_timer=self.create_timer(.25,self.loss_timer_callback)
         self.last_tag=time.time()
+        self.track_state=0
 
     def sled_callback(self,msg):
         print("sled_callback")
@@ -55,11 +58,19 @@ class MyNode(Node):
         
         zoom=max(min(zoom_min+((tractor_cam_dist-dist_min)/(dist_max-dist_min))*(zoom_max-zoom_min),16345),0)
         print(zoom)
-        if time.time()-self.last_tag>=.25:
+        if time.time()-self.last_tag>=.25 and self.track_state==1:
             cam.abs_pos(18,18,math.degrees(tractor_cam_angle[1]),math.degrees(tractor_cam_angle[2]))
         #time.sleep(.1)
         #cam.zoom_pos(zoom)
     
+    def track_state_callback(self,msg):
+        self.track_state=msg.trackstate
+        print(self.track_state)
+        if self.track_state==2:
+            cam.abs_pos(18,18,0,0)
+        if self.track_state==3:
+            cam.abs_pos(18,18,-45,0)
+
     def img_callback(self,msg):
         img=self.cv_bridge.imgmsg_to_cv2(msg)
         gray=cv.cvtColor(img, cv.COLOR_BGR2GRAY)
@@ -68,7 +79,7 @@ class MyNode(Node):
         except Exception as e:
             print(f"no tag {e}")
             detections=[]
-        if len(detections)>0:
+        if len(detections)>0 and self.track_state==1:
             tag_size=cv.norm(detections[0].corners[0]-detections[0].corners[1])
             x=detections[0].center[0]
             y=detections[0].center[1]
@@ -87,7 +98,7 @@ class MyNode(Node):
             print(f"tag x: {x} y: {y} size: {tag_size} pan: {pan} tilt: {tilt}")
 
     def loss_timer_callback(self):
-        if time.time()-self.last_tag >+.25:
+        if time.time()-self.last_tag >+.25 and self.track_state==1:
             cam.move(0,0)
             cam.zoom(-2)
         

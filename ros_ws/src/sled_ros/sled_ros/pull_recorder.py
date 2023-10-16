@@ -2,38 +2,33 @@ import rclpy
 from rclpy.node import Node
 from sled_msgs.msg import Sled
 from sled_msgs.msg import Currentpull
+from rclpy.serialization import serialize_message
 import time
-import rosbag2_py
+import csv
 class YourNode(Node):
     def __init__(self):
         super().__init__('your_node')
         self.get_logger().info("Your ROS 2 Node is running!")
-        self.pull_sub=self.create_subscription(Sled,'sled',self.sled_callback,10)
-        self.track_sub=self.create_subscription(Currentpull, 'track_state',self.track_state,10)
-        self.pull_id_sub=self.create_subscription(Currentpull, 'pull_id',self.current_pull_callback,10)
-        self.pub_timer=self.create_timer(1,self.timer_callback)
-        self
+        self.pull_pub=self.create_publisher(Sled,'sled',10)
+        self.track_sub=self.create_subscription(Currentpull, 'track_state',self.trackstate_callback,10)
+        self.pull_id_sub=self.create_subscription(Currentpull, 'current_pull',self.current_pull_callback,10)
+        self.sled_sub = self.create_subscription(Sled, 'sled', self.sled_callback, 10)
+        
         self.i=0.0
         self.current_pullid=0
         self.track_state=0
-        self.writer=rosbag2_py.SequentialWriter()
+        
         self.pull_active=False
         
-
-    def timer_callback(self):
-        sled=Sled()
-        sled.speed=((self.i-100)/38)**2+7
-        sled.distance=self.i
-        self.i+=sled.speed*1.46667/1
-        if self.i>200:
-            self.i=0.0
-            sled.distance=0.0
-            self.pull_pub.publish(sled)
-            time.sleep(10)
-        self.pull_pub.publish(sled)
     
-    def sled_callback(self):
-        print("Sled callback")
+    def sled_callback(self,msg):
+        
+        if self.pull_active:
+            row=[msg.distance,msg.force,msg.speed]
+            for data in msg.data:
+                row.append(data)
+            self.writer.writerow(row)
+            
     
     def current_pull_callback(self,msg):
         print("current pull callback")
@@ -41,14 +36,23 @@ class YourNode(Node):
     
     def trackstate_callback(self,msg):
         self.track_state=msg.trackstate
+        print(self.track_state)
         if self.track_state==1 and self.pull_active==False:
-            self.storage_options=rosbag2_py.StorageOptions(
-                uri=f"pull{self.current_pullid}",
-                storage_id='splite3'
-            )
-            self.converter_options=rosbag2_py.ConverterOptions('','')
-            self.writer.open(self.storage_options,self.converter_options)
+            self.csv=open(f"{self.current_pullid}",mode='w',newline='')
+            self.writer=csv.writer(self.csv)
+            self.pull_active=True
+            print(f"opened csv for pull {self.current_pullid}")
+        
+        if self.track_state!=1 and self.pull_active:
+            self.csv.flush()
+            self.csv.close()
+            self.pull_active=False
+            print(f"closed csv for pull {self.current_pullid}")
+
+
             
+
+
 
 
 
