@@ -17,7 +17,7 @@ zoom_min=0
 dist_max=150
 dist_min=50
 
-cap=cv.VideoCapture(2)
+cap=cv.VideoCapture(6)
 
 
 
