@@ -14,6 +14,7 @@ class YourNode(Node):
         self.sled_pub = self.create_publisher(Sled,'sled',10)
         self.track_state_pub = self.create_publisher(Currentpull, 'track_state',10)
         self.current_pull_sub = self.create_subscription(Currentpull, 'current_pull',self.current_pull_callback,10)
+        self.track_state_timer = self.create_timer(1,self.track_state_publish)
         self.track_state=0
         self.current_pull=0
         self.speed=0.0

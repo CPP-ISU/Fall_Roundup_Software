@@ -33,11 +33,13 @@ class DataModel(QObject):
         self.speed=0.0
         self.current_class=1
         self.current_track_state=0
+        self.last_pulls_list=[]
         self.current_pull_obj={"id":0,"team":"","team_abv":"","tractor_name":"","tractor_num":0,"color":"","id":0,"max_tractor_dist":0}
         #self.max_pull=200
         self.sled_sub=node.create_subscription(Sled,'sled',self.sled_callback,10)
         self.current_pull_sub = node.create_subscription(Currentpull, 'current_pull',self.current_pull_callback,10)
         self.trackstate_sub = node.create_subscription(Currentpull, 'track_state',self.track_state_callback,10)
+        
         self.thread()
 
     @pyqtProperty(QVariant, notify=lastChanged)
@@ -192,6 +194,7 @@ class DataModel(QObject):
             self.current_pull_obj["id"]=pull_id
             self.currentChanged.emit()
             #self.get_pulls(class_id)
+            self.get_pulls(class_id)
             self.last_pulls(class_id)
             localdb.close()
     
@@ -202,6 +205,7 @@ class DataModel(QObject):
             password="darkcyde15",
             database='fallrounudp'
             )
+        self.last_pulls_list=[]
         localcursor=localdb.cursor()
         sql=f"SELECT team_id, tractor_id, final_dist, max_speed FROM all_pull_results WHERE class = {class_id} ORDER BY pull_id DESC LIMIT 5"
         localcursor.execute(sql)
@@ -210,11 +214,12 @@ class DataModel(QObject):
         for x in result:
             team_id,tractor_id,dist,speed=x
             pull={"team_name":self.teams[team_id]["name"],"team_abv":self.teams[team_id]["abv"],"tractor_num":self.tractors[tractor_id]["number"],"distance":dist,"speed":speed}
-            pulls.append(pull)
+            #pull=1
+            self.last_pulls_list.append(pull)
         print(len(pulls))
         #pulls =[pulls[len(pulls)-1]]
-        pulls=[]
-        self.last_pulls_list=pulls
+        
+        
         self.lastChanged.emit()
         localdb.close()
         print(self.last_pulls_list)

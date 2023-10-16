@@ -45,7 +45,7 @@ class YourNode(Node):
                             speed=[]
                             dist=[]
                             for row in reader:
-                                speed.append(float(row[1]))
+                                speed.append(float(row[2]))
                                 dist.append(float(row[0]))
                                 data.append((float(row[0]),float(row[1]),float(row[2]),key))
                                 #data.append(row)
@@ -55,11 +55,11 @@ class YourNode(Node):
                             localcursor.executemany(sql,data)
                             sql=f"UPDATE all_pull_results SET uploaded = 1 WHERE(pull_id ={key})"
                             localcursor.execute(sql)
-                            if len(speed)>1:
-                                sql=f"UPDATE all_pull_results SET max_speed = {max(speed)} WHERE(pull_id ={key})"
-                                localcursor.execute(sql)
-                                sql=f"UPDATE all_pull_results SET final_dist = {max(dist)} WHERE(pull_id ={key})"
-                                localcursor.execute(sql)
+                            
+                            sql=f"UPDATE all_pull_results SET max_speed = {max(speed)} WHERE(pull_id ={key})"
+                            localcursor.execute(sql)
+                            sql=f"UPDATE all_pull_results SET final_dist = {max(dist)} WHERE(pull_id ={key})"
+                            localcursor.execute(sql)
                             localdb.commit()
                             print("upload complete")
                             

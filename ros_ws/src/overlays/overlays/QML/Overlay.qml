@@ -110,7 +110,7 @@ ApplicationWindow {
 
     }
     Rectangle{
-            
+            id: rankingRect
             y:0
             width: parent.width/3
             x: 2*parent.width/3
@@ -155,21 +155,25 @@ ApplicationWindow {
                         color: "#FFFFFF"
                     }
                 }
-            
+            }
             ListView{
+                id: lastpullsview
                 width:parent.width
-                height:parent.height/6 *5
-                y:parent.height/6
+                height:5*rankingRect.height /6
+                y:rankingRect.height/6
                 model:dataModel.last_pulls_qt
+                //spacing: 10
+                orientation: ListView.Vertical
                 delegate: Rectangle{
-                    width:parent.width
-                    height:parent.height/5
+                    width:lastpullsview.width
+                    height:lastpullsview.height/6
+                    
                     Rectangle{
                         width: parent.width/2
                         color:"#555555"
                         height:parent.height
                         Text{
-                            text: "text"
+                            text: modelData.team_name
                             color: "#FFFFFF"
                             font.pointSize: parent.height/2.5
                         }
@@ -180,7 +184,7 @@ ApplicationWindow {
                         color:"#555555"
                         height:parent.height
                         Text{
-                            text: "text"
+                            text: modelData.distance
                             color: "#FFFFFF"
                             font.pointSize: parent.height/2.5
                         }
@@ -191,14 +195,14 @@ ApplicationWindow {
                         color:"#555555"
                         height:parent.height
                         Text{
-                            text: "text"
+                            text: modelData.speed
                             color: "#FFFFFF"
                             font.pointSize: parent.height/2.5
                         }
                     }
                 }
             } 
-            }
+            
         }
     
 }
