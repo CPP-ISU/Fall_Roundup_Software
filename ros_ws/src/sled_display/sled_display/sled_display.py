@@ -53,7 +53,7 @@ class DataModel(QObject):
         for result in myresult:
             tractors=[]
             team_id,team_name,team_abrev=result
-            localcursor.execute("SELECT tractor_id, team_id,tractor_num FROM tractors where team_id="+str(team_id))
+            localcursor.execute("SELECT tractor_id, team_id,tractor_num, tractor_name FROM tractors where team_id="+str(team_id))
             tractor_result=localcursor.fetchall()
             for i in tractor_result:
                 pulls=[]
