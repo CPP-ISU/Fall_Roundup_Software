@@ -54,28 +54,33 @@ class MyNode(Node):
         tractor_cam_xy_dist=math.sqrt(dx**2+dy**2)
         tractor_cam_angle=[0,math.asin(dx/tractor_cam_xy_dist),math.asin(dz/tractor_cam_xy_dist)]
         tractor_cam_angle[2]=0
-        print(tractor_cam_dist)
+        #print(tractor_cam_dist)
         
         zoom=max(min(zoom_min+((tractor_cam_dist-dist_min)/(dist_max-dist_min))*(zoom_max-zoom_min),16345),0)
-        print(zoom)
+        #print(zoom)
         if time.time()-self.last_tag>=.25 and self.track_state==1:
             cam.abs_pos(18,18,math.degrees(tractor_cam_angle[1]),math.degrees(tractor_cam_angle[2]))
 
     def sled_callback(self,msg):
-        print("sled_callback")
+        #print("sled_callback")
         self.dist=msg.distance
         
         #time.sleep(.1)
         #cam.zoom_pos(zoom)
     
     def track_state_callback(self,msg):
-        self.track_state=msg.trackstate
-        print(self.track_state)
-        if self.track_state==2:
+        
+        #print(self.track_state)
+        if self.track_state==2 and msg.trackstate != self.track_state:
             cam.abs_pos(18,18,0,0)
-            cam.zoom(-3)
-        if self.track_state==3:
+            time.sleep(2)
+            cam.zoom_pos(0)
+        if self.track_state==3 and msg.trackstate != self.track_state:
             cam.abs_pos(18,18,-45,0)
+            time.sleep(2)
+            cam.zoom_pos(20)
+        self.track_state=msg.trackstate
+
 
     def img_callback(self,msg):
         img=self.cv_bridge.imgmsg_to_cv2(msg)
