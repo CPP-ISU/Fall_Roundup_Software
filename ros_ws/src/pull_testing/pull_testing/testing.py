@@ -33,6 +33,7 @@ class YourNode(Node):
             msg.distance=self.dist
             msg.speed=self.speed
             msg.force=self.load
+            msg.header.stamp=self.get_clock().now().to_msg()
             self.sled_pub.publish(msg)
             if self.speed<.01:
                 self.track_state=2
@@ -44,6 +45,7 @@ class YourNode(Node):
     def track_state_publish(self):
         msg = Currentpull()
         msg.trackstate=self.track_state
+        msg.header.stamp=self.get_clock().now().to_msg()
         self.track_state_pub.publish(msg)
     
     def current_pull_callback(self,msg):

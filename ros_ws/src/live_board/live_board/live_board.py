@@ -8,7 +8,7 @@ import mysql.connector
 import rclpy
 from sled_msgs.msg import Sled
 from sled_msgs.msg import Currentpull
-from threading import Thread
+from threading import *
 
 rclpy.init()
 node=rclpy.create_node('overlays')
@@ -30,20 +30,17 @@ class DataModel(QObject):
     maxSpeedChanged=pyqtSignal()
     powerChanged=pyqtSignal()
     maxPowerChanged=pyqtSignal()
-    pullDataChanged=pyqtSignal()
     def __init__(self):
         super().__init__()
-        self.update_list()
         # Initialize data as an array of dictionaries
         print("get teams")
         self.get_teams()
-        
+        print("get pulls")
+        self.get_pulls(0)
         print("get tractors")
         self.get_tractors()
         print("get last pulls")
         self.last_pulls(1)
-        print("get pulls")
-        #self.get_pulls(0)
         print("get pulls done")
         self.force=0.0
         self.max_force=0.0
@@ -60,19 +57,13 @@ class DataModel(QObject):
         self.max_power=0.0
         self.chart_data=[{"time":0.0,"speed":0.0,"force":0.0},{"time":1.0,"speed":4,"force":2.2}]
         self.current_pull_obj={"id":0,"team":"","team_abv":"","tractor_name":"","tractor_num":0,"color":"","id":0,"max_tractor_dist":0}
-        self.max_pull=200
-        self.pull_list=[]
-        self.pull_pub = node.create_publisher(Currentpull,'current_pull',10)
+        #self.max_pull=200
         self.sled_sub=node.create_subscription(Sled,'sled',self.sled_callback,10)
         self.current_pull_sub = node.create_subscription(Currentpull, 'current_pull',self.current_pull_callback,10)
         self.trackstate_sub = node.create_subscription(Currentpull, 'track_state',self.track_state_callback,10)
         
         self.thread()
         print("init done")
-
-    @pyqtProperty(QVariant, notify=pullDataChanged)
-    def pullData(self):
-        return self.pull_list
 
     @pyqtProperty(float, notify=powerChanged)
     def currentPower(self):
@@ -116,7 +107,7 @@ class DataModel(QObject):
 
     @pyqtProperty(QVariant, notify=dataChanged)
     def data(self):
-        return self._data
+        return self.pull_list
     
     @pyqtProperty(float, notify=speedChanged)
     def pull_speed(self):
@@ -141,91 +132,6 @@ class DataModel(QObject):
         if self._max_pull != value:
             self._max_pull = value
             self.maxChanged.emit()
-    
-
-    @pyqtSlot()
-    def update_list(self):
-        localdb = mysql.connector.connect(
-        host="iqs-fallroundup.cvjcxenhbni5.us-east-2.rds.amazonaws.com",
-        user="admin",
-        password="darkcyde15",
-        database='fallrounudp'
-        )
-        localcursor = localdb.cursor()
-        localcursor.execute("SELECT team_id, team_name, team_abv FROM teams")
-        myresult = localcursor.fetchall()
-        self._data = []
-
-        for result in myresult:
-            tractors=[]
-            team_id,team_name,team_abrev=result
-            localcursor.execute("SELECT tractor_id, team_id,tractor_num, tractor_name FROM tractors where team_id="+str(team_id))
-            tractor_result=localcursor.fetchall()
-            for i in tractor_result:
-                pulls=[]
-                tractor_id,team_id,tractor_num,tractor_name=i
-                localcursor.execute("SELECT pull_id, final_dist FROM all_pull_results where tractor_id="+str(tractor_id))
-                pullresult = localcursor.fetchall()
-                for j,x in enumerate(pullresult):
-                    pull_id,dist=x
-                    pull={"pull_id":pull_id,"dist":dist,"hook_num":j+1}
-                    pulls.append(pull)
-                pull={"pull_id":0,"dist":0,"hook_num":len(pullresult)+1}
-                pulls.append(pull)
-                
-                tractor={"tractor_id":tractor_id,"team_id":team_id,"tractor_num":tractor_num,"pulls":pulls}
-                tractors.append(tractor)
-
-            out={"team_id":team_id,"team_name":team_name,"team_abrev":team_abrev,"tractors":tractors}
-            self._data.append(out)
-        self.dataChanged.emit()
-
-    def get_pulls(self,pull_class):
-        self.pull_list=[]
-        localdb = mysql.connector.connect(
-            host="iqs-fallroundup.cvjcxenhbni5.us-east-2.rds.amazonaws.com",
-            user="admin",
-            password="darkcyde15",
-            database='fallrounudp'
-            )
-        localcursor=localdb.cursor()
-        sql=f"SELECT pull_id, team_id, tractor_id, final_dist FROM all_pull_results WHERE class = {pull_class}"
-        localcursor.execute(sql)
-        results=localcursor.fetchall()
-        dists=[]
-        for x in results:
-            id,team_id,tractor_id,dist =x
-            #print(x)
-            pull={"id":id,"team":self.teams[team_id]["abv"],"tractor":tractor_id,"dist":dist,"color":self.teams[team_id]["color"]}
-            self.pull_list.append(pull)
-            dists.append(dist)
-        self.max_pull=int(max(dists))
-        self.maxChanged.emit()
-        self.pullDataChanged.emit()
-
-    @pyqtSlot(list)
-    def start_pull(self,data):
-        localdb = mysql.connector.connect(
-        host="iqs-fallroundup.cvjcxenhbni5.us-east-2.rds.amazonaws.com",
-        user="admin",
-        password="darkcyde15",
-        database='fallrounudp'
-        )
-        localcursor = localdb.cursor()
-        print(f"pull started {data}")
-        pull=Currentpull()
-        if data[3]==0:
-            sql="INSERT INTO all_pull_results (class, team_id, tractor_id) VALUES (%s, %s, %s)"
-            values=(data[0], data[1], data[2])
-            localcursor.execute(sql,values)
-            localdb.commit()
-            localcursor.execute("SELECT max(pull_id) FROM all_pull_results")
-            x=localcursor.fetchone()
-            print(x[0])
-            pull.pullid=int(x[0])
-        else:
-            pull.pullid=data[3]
-        self.pull_pub.publish(pull)
 
     def get_teams(self):
         self.teams={}
@@ -261,6 +167,26 @@ class DataModel(QObject):
             tractor={"team_id":team_id,"name":name,"number":num}
             self.tractors[tid]=tractor
 
+    def get_pulls(self,pull_class):
+        self.pull_list=[]
+        localdb = mysql.connector.connect(
+            host="iqs-fallroundup.cvjcxenhbni5.us-east-2.rds.amazonaws.com",
+            user="admin",
+            password="darkcyde15",
+            database='fallrounudp'
+            )
+        localcursor=localdb.cursor()
+        sql=f"SELECT pull_id, team_id, tractor_id, final_dist FROM all_pull_results WHERE class = {pull_class}"
+        localcursor.execute(sql)
+        results=localcursor.fetchall()
+        dists=[]
+        for x in results:
+            id,team_id,tractor_id,dist =x
+            pull={"id":id,"team":self.teams[team_id]["abv"],"tractor":tractor_id,"dist":dist,"color":self.teams[team_id]["color"]}
+            self.pull_list.append(pull)
+            dists.append(dist)
+        self.max_pull=int(max(dists))
+        self.dataChanged.emit()
     
     def thread(self):
         t1=Thread(target=self.ros_thread)
@@ -420,7 +346,7 @@ def main():
     print("engine")
     engine.rootContext().setContextProperty("dataModel", data_model)
     print("load")
-    engine.load(QUrl("src/sled_display/sled_display/QML/live.qml"))
+    engine.load(QUrl("src/live_board/live_board/QML/live.qml"))
     print("engine done")
     if not engine.rootObjects():
         sys.exit(-1)

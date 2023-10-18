@@ -12,7 +12,7 @@ Rectangle{
     property int pull_id:0
     property var hitch_height: 7.5
     property var sled_height: 1.5
-    property var class_id: 0
+    property var class_id: 1
     Text{
         text: "Start Pull"
         x: parent.width / 30
@@ -158,6 +158,8 @@ Rectangle{
         onClicked: {
             var array = [root.class_id, root.team_id,root.tractor_id,root.pull_id];
             dataModel.start_pull(array);
+            disableStart();
+            window.start_enabled=false;
         }
         Text{
             anchors.centerIn: parent
@@ -194,4 +196,5 @@ Rectangle{
         root.hitch_height=get(currentIndex)
     }
     }
+    signal disableStart()
 }

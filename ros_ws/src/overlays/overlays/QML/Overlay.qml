@@ -60,7 +60,7 @@ ApplicationWindow {
             height:parent.height/4
             color:dataModel.track_state == 1 ? "#00FF00" : dataModel.track_state == 2 ? "#FF0000" : "#FFFF00"
             Text{
-                text: dataModel.track_state == 1 ? "Pulling" : dataModel.track_state == 2 ? "Stopped" : "Reseting"
+                text: dataModel.track_state == 1 ? "Pulling" : dataModel.track_state == 2 ? "Stopped" : "Resetting"
                 color: "#000000"
                 anchors.centerIn:parent
                 font.pointSize:parent.height/2.5
