@@ -18,7 +18,7 @@ class MyROSNode(Node):
     def callback_function(self):
         message=self.bus.recv()
         #print(message.arbitration_id)
-        if message.arbitration_id==0x0CFF6607:
+        if message.arbitration_id==0x0CFF6507:
             print("msg")
             self.pull_state=message.data[0]
             self.distance=message.data[2]+message.data[3]<<8
