@@ -3,7 +3,6 @@ from PyQt5.QtCore import QObject, QUrl, pyqtProperty, pyqtSignal, pyqtSlot, QVar
 from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtQml import QQmlApplicationEngine
 from PyQt5.QtWidgets import QApplication
-from PyQt5.QtChart import QLineSeries
 import mysql.connector
 import rclpy
 from sled_msgs.msg import Sled
