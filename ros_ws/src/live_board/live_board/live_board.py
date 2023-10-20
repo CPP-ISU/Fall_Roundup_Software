@@ -3,7 +3,7 @@ from PyQt5.QtCore import QObject, QUrl, pyqtProperty, pyqtSignal, pyqtSlot, QVar
 from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtQml import QQmlApplicationEngine
 from PyQt5.QtWidgets import QApplication
-from PyQt5.QtChart import QLineSeries
+
 import mysql.connector
 import rclpy
 from sled_msgs.msg import Sled
@@ -25,7 +25,7 @@ class DataModel(QObject):
     classChanged=pyqtSignal()
     chartChanged=pyqtSignal()
     timeChanged=pyqtSignal()
-    speedLineChanged=pyqtSignal()
+    
     maxForceChanged=pyqtSignal()
     maxSpeedChanged=pyqtSignal()
     powerChanged=pyqtSignal()
@@ -45,7 +45,7 @@ class DataModel(QObject):
         self.force=0.0
         self.max_force=0.0
         self.max_speed=0.0
-        self.speed_line=QLineSeries()
+        
         self.pull_dist=123
         self.speed=0.0
         self.pull_durration=1.0
@@ -85,9 +85,7 @@ class DataModel(QObject):
     def maxForce(self):
         return self.max_force
 
-    @pyqtProperty(QLineSeries, notify=speedLineChanged)
-    def speedLine(self):
-        return self.speed_line
+    
 
     @pyqtProperty(float, notify=timeChanged)
     def pullDuration(self):
@@ -232,8 +230,7 @@ class DataModel(QObject):
             if self.speed>self.max_speed:
                 self.max_speed=self.speed
                 self.maxSpeedChanged.emit()
-        self.speed_line.append(self.pull_durration,self.speed)
-        self.speedLineChanged.emit()
+        
         #print(self.chart_data)
         self.powerChanged.emit()
         self.distChanged.emit()
