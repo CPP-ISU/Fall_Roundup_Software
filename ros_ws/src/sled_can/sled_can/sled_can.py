@@ -13,7 +13,7 @@ class MyROSNode(Node):
         self.sled_pub = self.create_publisher(Sled,"sled",10)
         self.sled_timer=self.create_timer(.00001,self.callback_function)
         self.bus = can.Bus(channel='can0', interface='socketcan')
-        self.current_pull_pub= self.create_publisher(Currentpull,"trackstate",10)
+        self.current_pull_pub= self.create_publisher(Currentpull,"track_state",10)
 
     def callback_function(self):
         message=self.bus.recv()

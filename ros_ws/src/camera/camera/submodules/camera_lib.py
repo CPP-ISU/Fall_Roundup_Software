@@ -193,10 +193,9 @@ if __name__=="__main__":
 
     #cam.zoom_pos(0)
     #cam.zoom(-4)
-    #cam.zoom_pos(50)
+    #cam.zoom_pos(60)
     #time.sleep(1)
-    cam.abs_pos(18,18,0,2
-                0)
+    cam.abs_pos(18,18,-6,13)
     #cam.zoom(-7)
     #cam.exposure_set()
     #cam.focus_mode_set()
