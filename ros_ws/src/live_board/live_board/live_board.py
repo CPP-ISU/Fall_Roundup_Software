@@ -325,8 +325,10 @@ class DataModel(QObject):
         if msg.trackstate!=self.current_track_state:
             self.current_track_state=msg.trackstate
             self.trackChanged.emit()
-            if self.track_state==1:
+            
+            if self.current_track_state==1:
                 self.pull_start_time = node.get_clock().now().nanoseconds/1000000000.0
+                print(f"Start time: {self.pull_start_time}")
 
 
         

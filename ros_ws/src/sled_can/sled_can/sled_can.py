@@ -25,6 +25,7 @@ class MyROSNode(Node):
             self.force=(message.data[4]|message.data[5]<<8)/10.0
             self.speed=((message.data[6]|message.data[7]<<8)/12.0)*0.681818
             sled=Sled()
+            sled.header.stamp=self.get_clock().now().to_msg()
             sled.force=self.force
             sled.distance=self.distance
             sled.speed=self.speed
