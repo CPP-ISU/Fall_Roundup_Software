@@ -72,11 +72,11 @@ class MyNode(Node):
         
         #print(self.track_state)
         if self.track_state==2 and msg.trackstate != self.track_state:
-            cam.abs_pos(18,18,0,0)
+            cam.abs_pos(18,18,0,10)
             time.sleep(2)
             cam.zoom_pos(0)
         if self.track_state==3 and msg.trackstate != self.track_state:
-            cam.abs_pos(18,18,-45,0)
+            cam.abs_pos(18,18,-45,10)
             time.sleep(2)
             cam.zoom_pos(20)
         self.track_state=msg.trackstate

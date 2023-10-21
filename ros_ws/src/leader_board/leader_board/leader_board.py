@@ -99,7 +99,7 @@ class DataModel(QObject):
         for x in result:
             pulls=[]
             class_id,class_name=x
-            sql="SELECT tractor_id, final_dist, max_speed FROM all_pull_results ORDER BY final_dist DESC LIMIT 30"
+            sql=f"SELECT tractor_id, final_dist, max_speed FROM all_pull_results WHERE class = {class_id} ORDER BY final_dist DESC LIMIT 30"
             localcursor.execute(sql)
             yresult=localcursor.fetchall()
             for y in yresult:
@@ -111,7 +111,7 @@ class DataModel(QObject):
             self.leader_board_obj.append(class_obj)
         self.leaderBoardChanged.emit()
         localdb.close()
-        #print(self.leader_board_obj)
+        print(self.leader_board_obj)
 
 
 

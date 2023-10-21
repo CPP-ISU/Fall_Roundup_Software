@@ -189,7 +189,7 @@ if __name__=="__main__":
         time.sleep(1)
     print(speeds)
     """
-    #cam.abs_pos(18,18,0,-18)
+    cam.abs_pos(18,18,0,-10)
 
     #cam.zoom_pos(0)
     #cam.zoom(-4)

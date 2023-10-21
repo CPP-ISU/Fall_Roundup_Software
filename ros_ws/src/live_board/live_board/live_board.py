@@ -210,6 +210,7 @@ class DataModel(QObject):
             self.max_power=self.power
             self.maxPowerChanged.emit()
         time=msg.header.stamp.sec+msg.header.stamp.nanosec/1000000000
+        self.last_sled=msg.header.stamp.sec+msg.header.stamp.nanosec/1000000000
         self.pull_durration=time-self.pull_start_time
         #print(f"sec: {msg.header.stamp.sec} nano: {msg.header.stamp.nanosec} time: {time} duration: {self.pull_durration} start: {self.pull_start_time}")
         
@@ -219,7 +220,7 @@ class DataModel(QObject):
         
 
 
-        if self.pull_durration-self.chart_data[-1]["time"]>.1:
+        if self.time-self.last_sled>.1:
             self.chart_data.append(data)
             self.chartChanged.emit()
             self.timeChanged.emit()
@@ -277,6 +278,10 @@ class DataModel(QObject):
             self.currentChanged.emit()
             self.chart_data=[{"time":0.0,"speed":0.0,"force":0.0}]
             self.chartChanged.emit()
+            self.max_speed=0.0
+            self.maxSpeedChanged.emit()
+            self.max_speed=0.0
+            self.maxSpeedChanged.emit()
             #self.get_pulls(class_id)
             self.get_pulls(class_id)
             self.last_pulls(class_id)

@@ -7,6 +7,7 @@ ApplicationWindow {
     width: 1920
     height: 1080
     title: "PyQt QML App"
+    //visibility: "FullScreen"
     Rectangle{
         width:parent.width
         height: parent.height
