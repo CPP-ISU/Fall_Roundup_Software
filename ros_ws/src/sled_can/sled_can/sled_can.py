@@ -21,9 +21,9 @@ class MyROSNode(Node):
         if message.arbitration_id==0x0CFF6507:
             #print("msg")
             self.pull_state=message.data[0]
-            self.distance=(message.data[2]+message.data[3]<<8)*1.0
+            self.distance=(message.data[2]+message.data[3]<<8)/12.0
             self.force=(message.data[4]+message.data[5]<<8)/10.0
-            self.speed=(message.data[6]+message.data[7]<<8)*1.0
+            self.speed=((message.data[6]+message.data[7]<<8)/12.0)*0.681818
             sled=Sled()
             sled.force=self.force
             sled.distance=self.distance
