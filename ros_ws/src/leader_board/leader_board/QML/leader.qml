@@ -24,7 +24,7 @@ ApplicationWindow {
                 color: "#222222"
                 Text{
                     anchors.centerIn: parent
-                    text:dataModel.leaderBoard[2].class_name
+                    text:dataModel.leaderBoard[5].class_name
                     font.pointSize: parent.height / 3
                     color: "#FFFFFF"
                 }
@@ -84,13 +84,13 @@ ApplicationWindow {
         ListView{
             y:parent.height/8
             id:listView1
-            model:dataModel.leaderBoard[2].pulls
+            model:dataModel.leaderBoard[5].pulls
             width:parent.width
             height:parent.height
             delegate:Rectangle{
                 color:"#FF0000"
                 width:listView1.width
-                height: listView1.height / dataModel.leaderBoard[2].pulls.length
+                height: listView1.height / dataModel.leaderBoard[5].pulls.length
                 Rectangle{
                     width:parent.width/3
                     height:parent.height
