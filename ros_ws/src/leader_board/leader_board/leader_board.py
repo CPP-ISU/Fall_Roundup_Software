@@ -24,7 +24,7 @@ class DataModel(QObject):
         self.get_tractors()
         self.get_leaders()
         self.current_pull=0
-        self.current_pull_sub = node.create_subscription(Currentpull, 'current_pull',self.current_pull_callback,10)
+        self.current_pull_sub = node.create_subscription(Currentpull, 'current_pull_echo',self.current_pull_callback,10)
         self.leader_board_obj=[]
         self.thread()
         print("init done")
