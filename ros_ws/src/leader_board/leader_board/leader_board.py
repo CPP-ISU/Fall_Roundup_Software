@@ -3,7 +3,6 @@ from PyQt5.QtCore import QObject, QUrl, pyqtProperty, pyqtSignal, pyqtSlot, QVar
 from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtQml import QQmlApplicationEngine
 from PyQt5.QtWidgets import QApplication
-from PyQt5.QtChart import QLineSeries
 import mysql.connector
 import rclpy
 from sled_msgs.msg import Sled
@@ -25,7 +24,7 @@ class DataModel(QObject):
         self.get_tractors()
         self.get_leaders()
         self.current_pull=0
-        self.current_pull_sub = node.create_subscription(Currentpull, 'current_pull',self.current_pull_callback,10)
+        self.current_pull_sub = node.create_subscription(Currentpull, 'current_pull_echo',self.current_pull_callback,10)
         self.leader_board_obj=[]
         self.thread()
         print("init done")
@@ -100,7 +99,7 @@ class DataModel(QObject):
         for x in result:
             pulls=[]
             class_id,class_name=x
-            sql="SELECT tractor_id, final_dist, max_speed FROM all_pull_results ORDER BY final_dist DESC LIMIT 30"
+            sql=f"SELECT tractor_id, final_dist, max_speed FROM all_pull_results WHERE class = {class_id} ORDER BY final_dist DESC LIMIT 30"
             localcursor.execute(sql)
             yresult=localcursor.fetchall()
             for y in yresult:
@@ -112,7 +111,7 @@ class DataModel(QObject):
             self.leader_board_obj.append(class_obj)
         self.leaderBoardChanged.emit()
         localdb.close()
-        #print(self.leader_board_obj)
+        print(self.leader_board_obj)
 
 
 

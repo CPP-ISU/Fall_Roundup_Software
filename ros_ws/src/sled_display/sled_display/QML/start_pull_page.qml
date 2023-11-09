@@ -12,7 +12,7 @@ Rectangle{
     property int pull_id:0
     property var hitch_height: 7.5
     property var sled_height: 1.5
-    property var class_id: 1
+    property var class_id: 6
     Text{
         text: "Start Pull"
         x: parent.width / 30

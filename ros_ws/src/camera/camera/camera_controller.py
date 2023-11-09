@@ -13,7 +13,7 @@ from sensor_msgs.msg import Image
 from apriltag import Detector, DetectorOptions
 from sled_msgs.msg import Currentpull
 
-camera_position=[100,50,0]
+camera_position=[100,80,25]
 camera_rotation=90
 tractor_offset=10
 zoom_max=50
@@ -52,8 +52,8 @@ class MyNode(Node):
         dz=tractor_position[2]-camera_position[2]
         tractor_cam_dist=math.sqrt(dx**2+dy**2+dz**2)
         tractor_cam_xy_dist=math.sqrt(dx**2+dy**2)
-        tractor_cam_angle=[0,math.asin(dx/tractor_cam_xy_dist),math.asin(dz/tractor_cam_xy_dist)]
-        tractor_cam_angle[2]=0
+        tractor_cam_angle=[0,math.asin(dx/tractor_cam_xy_dist),math.asin(-1*dz/tractor_cam_xy_dist)]
+        #tractor_cam_angle[2]=0
         #print(tractor_cam_dist)
         
         zoom=max(min(zoom_min+((tractor_cam_dist-dist_min)/(dist_max-dist_min))*(zoom_max-zoom_min),16345),0)
@@ -72,11 +72,11 @@ class MyNode(Node):
         
         #print(self.track_state)
         if self.track_state==2 and msg.trackstate != self.track_state:
-            cam.abs_pos(18,18,0,0)
+            cam.abs_pos(18,18,0,10)
             time.sleep(2)
             cam.zoom_pos(0)
         if self.track_state==3 and msg.trackstate != self.track_state:
-            cam.abs_pos(18,18,-45,0)
+            cam.abs_pos(18,18,-45,10)
             time.sleep(2)
             cam.zoom_pos(20)
         self.track_state=msg.trackstate

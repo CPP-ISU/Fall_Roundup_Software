@@ -1,12 +1,13 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
-import QtCharts 2.3
+
 
 ApplicationWindow {
     visible: true
     width: 1920
     height: 1080
     title: "PyQt QML App"
+    //visibility: "FullScreen"
     Rectangle{
         width:parent.width
         height: parent.height

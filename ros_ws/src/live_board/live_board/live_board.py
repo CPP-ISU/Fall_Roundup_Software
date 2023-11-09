@@ -3,7 +3,7 @@ from PyQt5.QtCore import QObject, QUrl, pyqtProperty, pyqtSignal, pyqtSlot, QVar
 from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtQml import QQmlApplicationEngine
 from PyQt5.QtWidgets import QApplication
-from PyQt5.QtChart import QLineSeries
+
 import mysql.connector
 import rclpy
 from sled_msgs.msg import Sled
@@ -25,7 +25,7 @@ class DataModel(QObject):
     classChanged=pyqtSignal()
     chartChanged=pyqtSignal()
     timeChanged=pyqtSignal()
-    speedLineChanged=pyqtSignal()
+    
     maxForceChanged=pyqtSignal()
     maxSpeedChanged=pyqtSignal()
     powerChanged=pyqtSignal()
@@ -45,7 +45,7 @@ class DataModel(QObject):
         self.force=0.0
         self.max_force=0.0
         self.max_speed=0.0
-        self.speed_line=QLineSeries()
+        
         self.pull_dist=123
         self.speed=0.0
         self.pull_durration=1.0
@@ -58,9 +58,9 @@ class DataModel(QObject):
         self.chart_data=[{"time":0.0,"speed":0.0,"force":0.0},{"time":1.0,"speed":4,"force":2.2}]
         self.current_pull_obj={"id":0,"team":"","team_abv":"","tractor_name":"","tractor_num":0,"color":"","id":0,"max_tractor_dist":0}
         #self.max_pull=200
-        self.sled_sub=node.create_subscription(Sled,'sled',self.sled_callback,10)
-        self.current_pull_sub = node.create_subscription(Currentpull, 'current_pull',self.current_pull_callback,10)
-        self.trackstate_sub = node.create_subscription(Currentpull, 'track_state',self.track_state_callback,10)
+        self.sled_sub=node.create_subscription(Sled,'sled_echo',self.sled_callback,10)
+        self.current_pull_sub = node.create_subscription(Currentpull, 'current_pull_echo',self.current_pull_callback,10)
+        self.trackstate_sub = node.create_subscription(Currentpull, 'track_state_echo',self.track_state_callback,10)
         
         self.thread()
         print("init done")
@@ -85,9 +85,7 @@ class DataModel(QObject):
     def maxForce(self):
         return self.max_force
 
-    @pyqtProperty(QLineSeries, notify=speedLineChanged)
-    def speedLine(self):
-        return self.speed_line
+    
 
     @pyqtProperty(float, notify=timeChanged)
     def pullDuration(self):
@@ -212,6 +210,7 @@ class DataModel(QObject):
             self.max_power=self.power
             self.maxPowerChanged.emit()
         time=msg.header.stamp.sec+msg.header.stamp.nanosec/1000000000
+        self.last_sled=msg.header.stamp.sec+msg.header.stamp.nanosec/1000000000
         self.pull_durration=time-self.pull_start_time
         #print(f"sec: {msg.header.stamp.sec} nano: {msg.header.stamp.nanosec} time: {time} duration: {self.pull_durration} start: {self.pull_start_time}")
         
@@ -221,7 +220,7 @@ class DataModel(QObject):
         
 
 
-        if self.pull_durration-self.chart_data[-1]["time"]>.1:
+        if self.time-self.last_sled>.1:
             self.chart_data.append(data)
             self.chartChanged.emit()
             self.timeChanged.emit()
@@ -232,8 +231,7 @@ class DataModel(QObject):
             if self.speed>self.max_speed:
                 self.max_speed=self.speed
                 self.maxSpeedChanged.emit()
-        self.speed_line.append(self.pull_durration,self.speed)
-        self.speedLineChanged.emit()
+        
         #print(self.chart_data)
         self.powerChanged.emit()
         self.distChanged.emit()
@@ -280,6 +278,10 @@ class DataModel(QObject):
             self.currentChanged.emit()
             self.chart_data=[{"time":0.0,"speed":0.0,"force":0.0}]
             self.chartChanged.emit()
+            self.max_speed=0.0
+            self.maxSpeedChanged.emit()
+            self.max_speed=0.0
+            self.maxSpeedChanged.emit()
             #self.get_pulls(class_id)
             self.get_pulls(class_id)
             self.last_pulls(class_id)
@@ -328,8 +330,10 @@ class DataModel(QObject):
         if msg.trackstate!=self.current_track_state:
             self.current_track_state=msg.trackstate
             self.trackChanged.emit()
-            if self.track_state==1:
+            
+            if self.current_track_state==1:
                 self.pull_start_time = node.get_clock().now().nanoseconds/1000000000.0
+                print(f"Start time: {self.pull_start_time}")
 
 
         
