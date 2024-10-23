@@ -1,0 +1,154 @@
+10:16:16.552: Using EGL/X11
+10:16:16.552: CPU Name: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
+10:16:16.552: CPU Speed: 4000.108MHz
+10:16:16.553: Physical Cores: 4, Logical Cores: 8
+10:16:16.553: Physical Memory: 32027MB Total, 22020MB Free
+10:16:16.553: Kernel Version: Linux 6.8.0-40-generic
+10:16:16.553: Distribution: "Ubuntu" "22.04"
+10:16:16.553: Desktop Environment: ubuntu:GNOME (ubuntu)
+10:16:16.553: Session Type: x11
+10:16:16.553: Window System: X11.0, Vendor: The X.Org Foundation, Version: 1.21.1
+10:16:16.554: Qt Version: 6.2.4 (runtime), 6.2.4 (compiled)
+10:16:16.554: Portable mode: false
+10:16:16.590: OBS 29.1.3 (linux)
+10:16:16.590: ---------------------------------
+10:16:16.629: ---------------------------------
+10:16:16.629: audio settings reset:
+10:16:16.629: 	samples per sec: 48000
+10:16:16.629: 	speakers:        2
+10:16:16.629: 	max buffering:   960 milliseconds
+10:16:16.629: 	buffering type:  dynamically increasing
+10:16:16.636: ---------------------------------
+10:16:16.636: Initializing OpenGL...
+10:16:16.697: Loading up OpenGL on adapter NVIDIA Corporation NVIDIA GeForce GTX 1070/PCIe/SSE2
+10:16:16.697: OpenGL loaded successfully, version 3.3.0 NVIDIA 535.183.01, shading language 3.30 NVIDIA via Cg compiler
+10:16:16.724: ---------------------------------
+10:16:16.724: video settings reset:
+10:16:16.724: 	base resolution:   1920x1080
+10:16:16.724: 	output resolution: 1920x1080
+10:16:16.724: 	downscale filter:  Bicubic
+10:16:16.724: 	fps:               30/1
+10:16:16.724: 	format:            NV12
+10:16:16.724: 	YUV mode:          Rec. 709/Partial
+10:16:16.724: NV12 texture support not available
+10:16:16.724: P010 texture support not available
+10:16:16.724: Audio monitoring device:
+10:16:16.724: 	name: Default
+10:16:16.724: 	id: default
+10:16:16.724: ---------------------------------
+10:16:16.736: No AJA devices found, skipping loading AJA UI plugin
+10:16:16.736: Failed to initialize module 'aja-output-ui.so'
+10:16:16.746: No AJA devices found, skipping loading AJA plugin
+10:16:16.746: Failed to initialize module 'aja.so'
+10:16:16.753: Failed to load 'en-US' text for module: 'decklink-captions.so'
+10:16:16.760: Failed to load 'en-US' text for module: 'decklink-output-ui.so'
+10:16:16.767: A DeckLink iterator could not be created.  The DeckLink drivers may not be installed
+10:16:16.767: Failed to initialize module 'decklink.so'
+10:16:16.967: [pipewire] No captures available
+10:16:16.997: [obs-browser]: Version 2.21.1
+10:16:16.997: [obs-browser]: CEF Version 103.0.5060.134 (runtime), 103.0.0-5060-shared-textures_143.2591+g4204d54+chromium-103.0.5060.134 (compiled)
+10:16:17.048: NVENC supported
+10:16:17.048: VAAPI: Failed to initialize display in vaapi_device_h264_supported
+10:16:17.048: FFmpeg VAAPI H264 encoding not supported
+10:16:17.048: VAAPI: Failed to initialize display in vaapi_device_hevc_supported
+10:16:17.048: FFmpeg VAAPI HEVC encoding not supported
+10:16:17.105: [obs-websocket] [obs_module_load] you can haz websockets (Version: 5.2.3 | RPC Version: 1)
+10:16:17.105: [obs-websocket] [obs_module_load] Qt version (compile-time): 6.2.4 | Qt version (run-time): 6.2.4
+10:16:17.105: [obs-websocket] [obs_module_load] Linked ASIO Version: 101801
+10:16:17.112: [obs-websocket] [obs_module_load] Module loaded.
+10:16:17.148: [vlc-video]: VLC 3.0.16 Vetinari found, VLC video source enabled
+10:16:17.148: ---------------------------------
+10:16:17.148:   Loaded Modules:
+10:16:17.148:     vlc-video.so
+10:16:17.148:     text-freetype2.so
+10:16:17.148:     rtmp-services.so
+10:16:17.148:     obs-x264.so
+10:16:17.148:     obs-websocket.so
+10:16:17.148:     obs-vst.so
+10:16:17.148:     obs-transitions.so
+10:16:17.148:     obs-outputs.so
+10:16:17.148:     obs-libfdk.so
+10:16:17.148:     obs-filters.so
+10:16:17.148:     obs-ffmpeg.so
+10:16:17.148:     obs-browser.so
+10:16:17.148:     linux-v4l2.so
+10:16:17.148:     linux-pulseaudio.so
+10:16:17.148:     linux-pipewire.so
+10:16:17.148:     linux-jack.so
+10:16:17.148:     linux-capture.so
+10:16:17.148:     linux-alsa.so
+10:16:17.148:     image-source.so
+10:16:17.148:     frontend-tools.so
+10:16:17.148:     decklink-output-ui.so
+10:16:17.148:     decklink-captions.so
+10:16:17.148: ---------------------------------
+10:16:17.149: ==== Startup complete ===============================================
+10:16:17.206: All scene data cleared
+10:16:17.206: ------------------------------------------------
+10:16:17.217: pulse-input: Server name: 'pulseaudio 15.99.1'
+10:16:17.217: pulse-input: Audio format: s16le, 44100 Hz, 2 channels
+10:16:17.217: pulse-input: Started recording from 'alsa_output.pci-0000_00_1f.3.iec958-stereo.monitor' (default)
+10:16:17.217: [Loaded global audio device]: 'Desktop Audio'
+10:16:17.395: pulse-input: Server name: 'pulseaudio 15.99.1'
+10:16:17.395: pulse-input: An error occurred while getting the source info!
+10:16:17.395: [Loaded global audio device]: 'Mic/Aux'
+10:16:17.395: pulse-input: Server name: 'pulseaudio 15.99.1'
+10:16:17.395: pulse-input: An error occurred while getting the source info!
+10:16:17.395: [Loaded global audio device]: 'Mic/Aux 2'
+10:16:17.395:     - filter: 'Gain' (gain_filter)
+10:16:17.396: pulse-input: Server name: 'pulseaudio 15.99.1'
+10:16:17.396: pulse-input: An error occurred while getting the source info!
+10:16:17.396: [Loaded global audio device]: 'Mic/Aux 3'
+10:16:17.396: v4l2-input: Start capture from /dev/video0
+10:16:17.396: v4l2-input: Unable to open device
+10:16:17.396: v4l2-input: Initialization failed, errno: No such file or directory
+10:16:17.400: [window-capture: 'Window Capture (Xcomposite) 2'] update settings:
+10:16:17.400: 	title: unknown
+10:16:17.400: 	class: unknown
+10:16:17.400: 
+10:16:17.400: [window-capture: 'leader'] update settings:
+10:16:17.400: 	title: unknown
+10:16:17.400: 	class: unknown
+10:16:17.400: 
+10:16:17.400: pulse-input: Server name: 'pulseaudio 15.99.1'
+10:16:17.401: pulse-input: An error occurred while getting the source info!
+10:16:17.401: pulse-input: Server name: 'pulseaudio 15.99.1'
+10:16:17.401: pulse-input: An error occurred while getting the source info!
+10:16:17.401: v4l2-input: Start capture from 
+10:16:17.401: v4l2-input: Unable to open device
+10:16:17.401: v4l2-input: Initialization failed, errno: No such file or directory
+10:16:17.401: v4l2-input: Start capture from 
+10:16:17.401: v4l2-input: Unable to open device
+10:16:17.401: v4l2-input: Initialization failed, errno: No such file or directory
+10:16:17.402: [Media Source 'Media Source']: settings:
+10:16:17.402: 	input:                   rtsp://admin:darkcyde15@192.168.1.223/play1.sdp
+10:16:17.402: 	input_format:            
+10:16:17.402: 	speed:                   100
+10:16:17.402: 	is_looping:              no
+10:16:17.402: 	is_linear_alpha:         no
+10:16:17.402: 	is_hw_decoding:          no
+10:16:17.402: 	is_clear_on_media_end:   yes
+10:16:17.402: 	restart_on_activate:     yes
+10:16:17.402: 	close_when_inactive:     no
+10:16:17.402: 	full_decode:             no
+10:16:17.402: 	ffmpeg_options:          
+10:16:17.403: Switched to scene 'Scene 2'
+10:16:17.403: ------------------------------------------------
+10:16:17.403: Loaded scenes:
+10:16:17.403: - scene 'Scene':
+10:16:17.403:     - source: 'Video Capture Device (V4L2)' (v4l2_input)
+10:16:17.403:     - source: 'corsair headset' (pulse_input_capture)
+10:16:17.403:         - filter: 'Gain' (gain_filter)
+10:16:17.403:     - source: 'Audio Input Capture (PulseAudio)' (pulse_input_capture)
+10:16:17.403:     - source: 'Video Capture Device (V4L2) 2' (v4l2_input)
+10:16:17.403:     - source: 'Video Capture Device (V4L2) 3' (v4l2_input)
+10:16:17.403:     - source: 'Media Source' (ffmpeg_source)
+10:16:17.403: - scene 'Scene 2':
+10:16:17.403:     - source: 'Window Capture (Xcomposite) 2' (xcomposite_input)
+10:16:17.403: - scene 'leader board':
+10:16:17.403:     - source: 'leader' (xcomposite_input)
+10:16:17.403: ------------------------------------------------
+10:16:17.464: [obs-websocket] [WebSocketServer::onObsLoaded] WebSocket server is enabled, starting...
+10:16:17.465: [obs-websocket] [WebSocketServer::Start] Not locked to IPv4 bindings
+10:16:17.465: [obs-websocket] [WebSocketServer::ServerRunner] IO thread started.
+10:16:17.465: [obs-websocket] [WebSocketServer::Start] Server started successfully on port 4455. Possible connect address: 192.168.1.143

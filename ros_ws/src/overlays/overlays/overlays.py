@@ -7,9 +7,10 @@ import rclpy
 from sled_msgs.msg import Sled
 from sled_msgs.msg import Currentpull
 from threading import *
-
+import uuid
 rclpy.init()
-node=rclpy.create_node('overlays')
+uu=str(uuid.uuid4())
+node=rclpy.create_node('overlays_'+uu)
 
 class DataModel(QObject):
     dataChanged = pyqtSignal()

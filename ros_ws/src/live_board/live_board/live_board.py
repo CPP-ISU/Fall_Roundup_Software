@@ -9,9 +9,10 @@ import rclpy
 from sled_msgs.msg import Sled
 from sled_msgs.msg import Currentpull
 from threading import *
-
+import uuid
 rclpy.init()
-node=rclpy.create_node('overlays')
+uu=str(uuid.uuid4())
+node=rclpy.create_node('liveboard_'+uu)
 
 class DataModel(QObject):
     dataChanged = pyqtSignal()
@@ -58,9 +59,9 @@ class DataModel(QObject):
         self.chart_data=[{"time":0.0,"speed":0.0,"force":0.0},{"time":1.0,"speed":4,"force":2.2}]
         self.current_pull_obj={"id":0,"team":"","team_abv":"","tractor_name":"","tractor_num":0,"color":"","id":0,"max_tractor_dist":0}
         #self.max_pull=200
-        self.sled_sub=node.create_subscription(Sled,'sled_echo',self.sled_callback,10)
-        self.current_pull_sub = node.create_subscription(Currentpull, 'current_pull_echo',self.current_pull_callback,10)
-        self.trackstate_sub = node.create_subscription(Currentpull, 'track_state_echo',self.track_state_callback,10)
+        self.sled_sub=node.create_subscription(Sled,'sled',self.sled_callback,10)
+        self.current_pull_sub = node.create_subscription(Currentpull, 'current_pull',self.current_pull_callback,10)
+        self.trackstate_sub = node.create_subscription(Currentpull, 'track_state',self.track_state_callback,10)
         
         self.thread()
         print("init done")

@@ -1,0 +1,173 @@
+11:58:33.041: [Safe Mode] Unclean shutdown detected!
+11:58:34.656: [Safe Mode] User has launched in Safe Mode.
+11:58:34.658: Using EGL/X11
+11:58:34.658: CPU Name: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
+11:58:34.658: CPU Speed: 3999.676MHz
+11:58:34.659: Physical Cores: 4, Logical Cores: 8
+11:58:34.659: Physical Memory: 32027MB Total, 694MB Free
+11:58:34.659: Kernel Version: Linux 6.8.0-40-generic
+11:58:34.659: Distribution: "Ubuntu" "22.04"
+11:58:34.659: Desktop Environment: ubuntu:GNOME (ubuntu)
+11:58:34.659: Session Type: x11
+11:58:34.659: Window System: X11.0, Vendor: The X.Org Foundation, Version: 1.21.1
+11:58:34.660: Qt Version: 6.2.4 (runtime), 6.2.4 (compiled)
+11:58:34.660: Portable mode: false
+11:58:34.660: Safe Mode enabled.
+11:58:34.688: OBS 30.2.3 (linux)
+11:58:34.688: ---------------------------------
+11:58:34.699: ---------------------------------
+11:58:34.699: audio settings reset:
+11:58:34.699: 	samples per sec: 48000
+11:58:34.699: 	speakers:        2
+11:58:34.699: 	max buffering:   960 milliseconds
+11:58:34.699: 	buffering type:  dynamically increasing
+11:58:34.701: ---------------------------------
+11:58:34.701: Initializing OpenGL...
+11:58:34.782: Loading up OpenGL on adapter NVIDIA Corporation NVIDIA GeForce GTX 1070/PCIe/SSE2
+11:58:34.782: OpenGL loaded successfully, version 3.3.0 NVIDIA 535.183.01, shading language 3.30 NVIDIA via Cg compiler
+11:58:34.811: ---------------------------------
+11:58:34.811: video settings reset:
+11:58:34.811: 	base resolution:   1920x1080
+11:58:34.811: 	output resolution: 1920x1080
+11:58:34.811: 	downscale filter:  Bicubic
+11:58:34.811: 	fps:               30/1
+11:58:34.811: 	format:            NV12
+11:58:34.811: 	YUV mode:          Rec. 709/Partial
+11:58:34.812: NV12 texture support enabled
+11:58:34.812: P010 texture support not available
+11:58:34.812: Audio monitoring device:
+11:58:34.812: 	name: Default
+11:58:34.812: 	id: default
+11:58:34.812: ---------------------------------
+11:58:34.824: No AJA devices found, skipping loading AJA UI plugin
+11:58:34.824: Failed to initialize module 'aja-output-ui.so'
+11:58:34.834: No AJA devices found, skipping loading AJA plugin
+11:58:34.834: Failed to initialize module 'aja.so'
+11:58:34.842: Failed to load 'en-US' text for module: 'decklink-captions.so'
+11:58:34.850: Failed to load 'en-US' text for module: 'decklink-output-ui.so'
+11:58:34.857: A DeckLink iterator could not be created.  The DeckLink drivers may not be installed
+11:58:34.857: Failed to initialize module 'decklink.so'
+11:58:34.865: Skipping module 'frontend-tools', not on safe list
+11:58:34.892: Skipping module 'libcef', not on safe list
+11:58:34.898: Skipping module 'libEGL', not on safe list
+11:58:34.907: Skipping module 'libGLESv2', not on safe list
+11:58:34.915: Skipping module 'libvk_swiftshader', not on safe list
+11:58:34.956: [pipewire] No capture sources available
+11:58:35.009: [obs-browser]: Version 2.23.6
+11:58:35.009: [obs-browser]: CEF Version 103.0.5060.134 (runtime), 103.0.0-5060-shared-textures.2594+g17f8588+chromium-103.0.5060.134 (compiled)
+11:58:35.064: NVENC supported
+11:58:35.064: VAAPI: Failed to initialize display in vaapi_device_h264_supported
+11:58:35.064: FFmpeg VAAPI H264 encoding not supported
+11:58:35.064: FFmpeg VAAPI AV1 encoding not supported
+11:58:35.064: VAAPI: Failed to initialize display in vaapi_device_hevc_supported
+11:58:35.064: FFmpeg VAAPI HEVC encoding not supported
+11:58:35.138: Skipping module 'obs-websocket', not on safe list
+11:58:35.177: [vlc-video]: VLC 3.0.16 Vetinari found, VLC video source enabled
+11:58:35.177: ---------------------------------
+11:58:35.177:   Loaded Modules:
+11:58:35.177:     vlc-video.so
+11:58:35.177:     text-freetype2.so
+11:58:35.177:     rtmp-services.so
+11:58:35.177:     obs-x264.so
+11:58:35.177:     obs-vst.so
+11:58:35.177:     obs-transitions.so
+11:58:35.177:     obs-qsv11.so
+11:58:35.177:     obs-outputs.so
+11:58:35.177:     obs-libfdk.so
+11:58:35.177:     obs-filters.so
+11:58:35.177:     obs-ffmpeg.so
+11:58:35.177:     obs-browser.so
+11:58:35.177:     linux-v4l2.so
+11:58:35.177:     linux-pulseaudio.so
+11:58:35.177:     linux-pipewire.so
+11:58:35.177:     linux-jack.so
+11:58:35.177:     linux-capture.so
+11:58:35.177:     linux-alsa.so
+11:58:35.177:     image-source.so
+11:58:35.177:     decklink-output-ui.so
+11:58:35.177:     decklink-captions.so
+11:58:35.177: ---------------------------------
+11:58:35.178: ---------------------------------
+11:58:35.178: Available Encoders:
+11:58:35.178:   Video Encoders:
+11:58:35.178: 	- ffmpeg_aom_av1 (AOM AV1)
+11:58:35.178: 	- ffmpeg_nvenc (NVIDIA NVENC H.264 (FFmpeg))
+11:58:35.178: 	- ffmpeg_hevc_nvenc (NVIDIA NVENC HEVC (FFmpeg))
+11:58:35.178: 	- obs_x264 (x264)
+11:58:35.178:   Audio Encoders:
+11:58:35.178: 	- ffmpeg_aac (FFmpeg AAC)
+11:58:35.178: 	- ffmpeg_opus (FFmpeg Opus)
+11:58:35.178: 	- ffmpeg_pcm_s16le (FFmpeg PCM (16-bit))
+11:58:35.178: 	- ffmpeg_pcm_s24le (FFmpeg PCM (24-bit))
+11:58:35.178: 	- ffmpeg_pcm_f32le (FFmpeg PCM (32-bit float))
+11:58:35.178: 	- ffmpeg_alac (FFmpeg ALAC (24-bit))
+11:58:35.178: 	- ffmpeg_flac (FFmpeg FLAC (16-bit))
+11:58:35.178: 	- libfdk_aac (libfdk AAC)
+11:58:35.178: ==== Startup complete ===============================================
+11:58:35.233: All scene data cleared
+11:58:35.233: ------------------------------------------------
+11:58:35.235: pulse-input: Server name: 'pulseaudio 15.99.1'
+11:58:35.235: pulse-input: Audio format: s16le, 44100 Hz, 2 channels
+11:58:35.236: pulse-input: Started recording from 'alsa_output.pci-0000_00_1f.3.iec958-stereo.monitor' (default)
+11:58:35.236: [Loaded global audio device]: 'Desktop Audio'
+11:58:35.236: pulse-input: Server name: 'pulseaudio 15.99.1'
+11:58:35.236: pulse-input: An error occurred while getting the source info!
+11:58:35.236: [Loaded global audio device]: 'Mic/Aux'
+11:58:35.236: pulse-input: Server name: 'pulseaudio 15.99.1'
+11:58:35.236: pulse-input: An error occurred while getting the source info!
+11:58:35.237: [Loaded global audio device]: 'Mic/Aux 2'
+11:58:35.237:     - filter: 'Gain' (gain_filter)
+11:58:35.237: pulse-input: Server name: 'pulseaudio 15.99.1'
+11:58:35.237: pulse-input: An error occurred while getting the source info!
+11:58:35.237: [Loaded global audio device]: 'Mic/Aux 3'
+11:58:35.238: v4l2-input: Start capture from /dev/video0
+11:58:35.238: v4l2-input: Unable to open device
+11:58:35.238: v4l2-input: Initialization failed, errno: No such file or directory
+11:58:35.241: [window-capture: 'Window Capture (Xcomposite) 2'] update settings:
+11:58:35.241: 	title: unknown
+11:58:35.241: 	class: unknown
+11:58:35.241: 
+11:58:35.242: [window-capture: 'leader'] update settings:
+11:58:35.242: 	title: unknown
+11:58:35.242: 	class: unknown
+11:58:35.242: 
+11:58:35.242: pulse-input: Server name: 'pulseaudio 15.99.1'
+11:58:35.242: pulse-input: An error occurred while getting the source info!
+11:58:35.242: pulse-input: Server name: 'pulseaudio 15.99.1'
+11:58:35.243: pulse-input: An error occurred while getting the source info!
+11:58:35.243: v4l2-input: Start capture from 
+11:58:35.243: v4l2-input: Unable to open device
+11:58:35.243: v4l2-input: Initialization failed, errno: No such file or directory
+11:58:35.243: v4l2-input: Start capture from 
+11:58:35.243: v4l2-input: Unable to open device
+11:58:35.243: v4l2-input: Initialization failed, errno: No such file or directory
+11:58:35.243: [Media Source 'Media Source']: settings:
+11:58:35.243: 	input:                   rtsp://admin:darkcyde15@192.168.1.223/play1.sdp
+11:58:35.243: 	input_format:            
+11:58:35.243: 	speed:                   100
+11:58:35.243: 	is_looping:              no
+11:58:35.243: 	is_linear_alpha:         no
+11:58:35.243: 	is_hw_decoding:          no
+11:58:35.243: 	is_clear_on_media_end:   yes
+11:58:35.243: 	restart_on_activate:     yes
+11:58:35.243: 	close_when_inactive:     no
+11:58:35.243: 	full_decode:             no
+11:58:35.243: 	ffmpeg_options:          
+11:58:35.245: Switched to scene 'Scene 2'
+11:58:35.245: ------------------------------------------------
+11:58:35.245: Loaded scenes:
+11:58:35.245: - scene 'Scene':
+11:58:35.245:     - source: 'Video Capture Device (V4L2)' (v4l2_input)
+11:58:35.245:     - source: 'corsair headset' (pulse_input_capture)
+11:58:35.245:         - filter: 'Gain' (gain_filter)
+11:58:35.245:     - source: 'Audio Input Capture (PulseAudio)' (pulse_input_capture)
+11:58:35.245:     - source: 'Video Capture Device (V4L2) 2' (v4l2_input)
+11:58:35.245:     - source: 'Video Capture Device (V4L2) 3' (v4l2_input)
+11:58:35.245:     - source: 'Media Source' (ffmpeg_source)
+11:58:35.245: - scene 'Scene 2':
+11:58:35.245:     - source: 'Window Capture (Xcomposite) 2' (xcomposite_input)
+11:58:35.245: - scene 'leader board':
+11:58:35.245:     - source: 'leader' (xcomposite_input)
+11:58:35.245: ------------------------------------------------
+11:58:35.323: YT: InitYTUserUrl() User is not signed
+11:58:35.323: YT: InitYTUserUrl() User is not signed

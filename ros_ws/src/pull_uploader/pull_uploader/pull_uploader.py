@@ -9,7 +9,7 @@ import mysql.connector
 
 class YourNode(Node):
     def __init__(self):
-        super().__init__('your_node')
+        super().__init__('pull_uploader')
         self.get_logger().info("Your ROS 2 Node is running!")
         self.track_sub=self.create_subscription(Currentpull, 'track_state',self.trackstate_callback,10)
         self.track_state=0

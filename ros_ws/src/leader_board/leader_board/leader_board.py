@@ -8,9 +8,10 @@ import rclpy
 from sled_msgs.msg import Sled
 from sled_msgs.msg import Currentpull
 from threading import *
-
+import uuid
 rclpy.init()
-node=rclpy.create_node('overlays')
+uu=str(uuid.uuid4())
+node=rclpy.create_node('leader_board_'+uu)
 
 class DataModel(QObject):
     dataChanged = pyqtSignal()
@@ -24,7 +25,7 @@ class DataModel(QObject):
         self.get_tractors()
         self.get_leaders()
         self.current_pull=0
-        self.current_pull_sub = node.create_subscription(Currentpull, 'current_pull_echo',self.current_pull_callback,10)
+        self.current_pull_sub = node.create_subscription(Currentpull, 'current_pull',self.current_pull_callback,10)
         self.leader_board_obj=[]
         self.thread()
         print("init done")

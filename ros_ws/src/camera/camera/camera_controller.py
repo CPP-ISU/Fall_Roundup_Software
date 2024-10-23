@@ -3,7 +3,6 @@
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
-from sled_msgs.msg import Sled
 from .submodules.camera_lib import camera as camera
 import math
 import time
@@ -11,117 +10,181 @@ import cv2 as cv
 from cv_bridge import CvBridge
 from sensor_msgs.msg import Image
 from apriltag import Detector, DetectorOptions
-from sled_msgs.msg import Currentpull
+import mysql.connector
+from geometry_msgs.msg import PoseArray
+from sql_package.connection import cursor_connection
+from tf2_ros.buffer import Buffer
+from tf2_ros.transform_listener import TransformListener
+from geometry_msgs.msg import TransformStamped
+import tf2_ros
+from std_msgs.msg import Int16
+from iqs_msgs.msg import Camera
+from functools import partial
 
-camera_position=[100,80,25]
-camera_rotation=90
-tractor_offset=10
-zoom_max=50
-zoom_min=0
-dist_max=150
-dist_min=50
-april_target_x=500
-april_target_y=500
-size_target=100
-
-
-cam=camera("/dev/ttyUSB0")
+class camera_obj:
+    def __init__(self,ip_addr,port,com_port,x,y,z,yaw):
+        self.ip_addr=ip_addr
+        self.port=port
+        self.com_port=com_port
+        self.visca_obj=camera(com_port,ip_addr,port)
+        self.x=x
+        self.y=y
+        self.z=z
+        self.yaw=yaw
+        self.mode=0 # 0:unset 1:joystick 2:preset 3: tag 4:auto
+        self.joystick=0
+        self.tag=0
+        self.track_state_setting={}
+        self.auto_mode=0 # 0:unset 1:joystick 2:preset 3:tag
+        self.tilt_pos_cmd=0
+        self.pan_pos_cmd=0
+        self.zoom_pos_cmd=0
+        self.pan_speed_cmd=0
+        self.tilt_speed_cmd=0
+        self.pzoom=1
 
 class MyNode(Node):
 
     def __init__(self):
-        super().__init__('my_node')
-        self.sled_sub = self.create_subscription(Sled,'sled',self.sled_callback,10)
-        self.get_logger().info('My Node is running.')
-        self.img_sub = self.create_subscription(Image,'camera_image',self.img_callback,10)
-        self.track_state_sub = self.create_subscription(Currentpull,'track_state',self.track_state_callback,10)
-        self.sled_timer = self.create_timer(.1,self.sled_timer)
-        self.cv_bridge=CvBridge()
-        options=DetectorOptions(quad_blur=1.0)
-        self.Detector=Detector(options=options)
-        self.loss_timer=self.create_timer(.25,self.loss_timer_callback)
-        self.last_tag=time.time()
-        self.track_state=0
-        self.dist=0.0
+        super().__init__('camera_controller')
+        db,cursor =cursor_connection()
+        self.get_logger().info('camera controller startup')
 
-    def sled_timer(self):
-        sled_pos=[self.dist,0,0]
-        tractor_position=[sled_pos[0]+tractor_offset,sled_pos[1],sled_pos[2]]
-        dx=tractor_position[0]-camera_position[0]
-        dy=tractor_position[1]-camera_position[1]
-        dz=tractor_position[2]-camera_position[2]
-        tractor_cam_dist=math.sqrt(dx**2+dy**2+dz**2)
-        tractor_cam_xy_dist=math.sqrt(dx**2+dy**2)
-        tractor_cam_angle=[0,math.asin(dx/tractor_cam_xy_dist),math.asin(-1*dz/tractor_cam_xy_dist)]
-        #tractor_cam_angle[2]=0
-        #print(tractor_cam_dist)
+        sql="SELECT camera_id, ip, port, com_port,x,y,z,yaw FROM camera_settings"
+        cursor.execute(sql)
+        result=cursor.fetchall()
+        self.cams={}
+        for x in result:
+            print(x)
+            id,ip,port,com_port,x,y,z,yaw=x
+            cam=camera_obj(ip,port,com_port,x,y,z,yaw)
+            self.cams[id]=cam
+        db.close()
+        print(self.cams)
+        for cam_key in self.cams.keys():
+            self.create_subscription(Camera,f"Camera_{0}",partial(self.camera_msg_callback,id=cam_key),10)
+        # self.tf_buffer = Buffer()
+        # self.tf_listener = TransformListener(self.tf_buffer, self)
+        # self.tf_broadcaster = tf2_ros.TransformBroadcaster(self)
+        # self.timer=self.create_timer(.1,self.publish_transform)
+        # self.tag_sub= self.create_subscription(PoseArray,"tag_array",self.tag_callback,10)
+        # self.track_state_sub=self.create_subscription(Int16,"track_state",self.track_state_callback,10)
+        # #self.track_state_camera_setting_update()
+        #self.camera_msg_sub = self.create_subscription(Camera,"Camera_1",self.camera_msg_callback,10)
         
-        zoom=max(min(zoom_min+((tractor_cam_dist-dist_min)/(dist_max-dist_min))*(zoom_max-zoom_min),16345),0)
-        #print(zoom)
-        if time.time()-self.last_tag>=.25 and self.track_state==1:
-            cam.abs_pos(18,18,math.degrees(tractor_cam_angle[1]),math.degrees(tractor_cam_angle[2]))
 
-    def sled_callback(self,msg):
-        #print("sled_callback")
-        self.dist=msg.distance
-        
-        #time.sleep(.1)
-        #cam.zoom_pos(zoom)
+    # def lookup_transform(self, target_frame, source_frame):
+    #     try:
+    #         transform = self.tf_buffer.lookup_transform(target_frame, source_frame, rclpy.time.Time())
+    #         return transform
+    #     except Exception as e:
+    #         self.get_logger().error(f"Error looking up transform: {e}")
+    #         return None
+
+    # def publish_transform(self):
+    #     for i in self.cams.keys():
+    #         # Example: Publishing a transform from 'base_link' to 'camera_link'
+    #         transform = TransformStamped()
+    #         transform.header.stamp = self.get_clock().now().to_msg()
+    #         transform.header.frame_id = 'map'
+    #         transform.child_frame_id = f'camera{i}'
+    #         transform.transform.translation.x = self.cams[i].x
+    #         transform.transform.translation.y = self.cams[i].y
+    #         transform.transform.translation.z = self.cams[i].z
+    #         #transform.transform.rotation = tf2_ros.transformations.quaternion_from_euler(0, 0, self.cams[i].yaw)
+    #         self.tf_broadcaster.sendTransform(transform)
+
+    # def goto_point(self,point,camera,zoom_constant,speed):
+    #     tf=self.lookup_transform("map",f"camera{camera}")
+    #     t=tf.transform.translation
+    #     x=point.x+t.x
+    #     y=point.y+t.y
+    #     z=point.z+t.z
+    #     dist=math.sqrt(x**2+y**2+z**2)
+    #     xy_dist=math.sqrt(x**2+y**2)
+    #     zoom=dist*zoom_constant
+    #     camera_angle=[0,math.asin(x/xy_dist),math.asin(z/xy_dist)]
+    #     self.cams[camera].visca_obj.abs_pos(speed,camera_angle[1],camera_angle[2])
+
+    # def tag_callback(self,msg):
+    #     for i in self.cams.keys():
+    #         if self.cams[i].mode==3 and self.cams[i].auto_mode==3:
+    #             self.goto_point(msg.poses[self.cams[i].tag].position,.1,17)
     
-    def track_state_callback(self,msg):
+    # def joystick_callback(self,msg):
+    #     for i in self.cams.keys():
+    #         if self.cams[i].mode==1 or self.cams[i].mode==3 and self.cams[i].auto_mode==1:
+    #             self.cams[i].visca_obj.move(int(msg.axes[0]*17),int(msg.axes[1]*17))
+
+    # def track_state_camera_setting_update(self):
+    #     db,cursor=cursor_connection()
+    #     sql="SELECT data_id, camera_id, track_state_id, mode, joystick, tag, preset FROM camera_trackstates"
+    #     cursor.execute(sql)
+    #     results=cursor.fetchall()
+    #     for x in results:
+    #         id,camera_id,track_state,mode,joystick,tag,preset=x
+    #         self.cams[camera_id].track_state_setting[track_state]=[mode,joystick,tag,preset]
         
-        #print(self.track_state)
-        if self.track_state==2 and msg.trackstate != self.track_state:
-            cam.abs_pos(18,18,0,10)
-            time.sleep(2)
-            cam.zoom_pos(0)
-        if self.track_state==3 and msg.trackstate != self.track_state:
-            cam.abs_pos(18,18,-45,10)
-            time.sleep(2)
-            cam.zoom_pos(20)
-        self.track_state=msg.trackstate
+    # def track_state_callback(self,msg):
+    #     for i in self.cams.keys():
+    #         cam=self.cams[i]
+    #         cam.auto_mode=cam.track_state_setting[msg.data][0]
+    #         cam.joystick=cam.track_state_setting[msg.data][1]
+    #         cam.tag=cam.track_state_setting[msg.data][2]
+    #         cam.preset=cam.track_state_setting[msg.data][3]
+    #         if cam.auto_mode==2 and cam.mode==3:
+    #             cam.visca_obj.call_preset(cam.preset)
 
+    def camera_msg_callback(self,msg,id):
+        """
+        Modes:
+        0: idle
+        1: speed control
+        2: closed loop control
+        3: position control
+        4: preset
+        """
+        cam_id=int(id)
+        self.cams[cam_id].visca_obj.control_mode=msg.control_mode
+        self.cams[cam_id].tilt_pos_cmd=msg.tilt_pos_cmd #not doing anything
+        self.cams[cam_id].pan_pos_cmd=msg.pan_pos_cmd #not doing anything
+        # self.cams[cam_id].visca_obj.closed_pan_goal=0.0
+        self.cams[cam_id].visca_obj.closed_pan_goal=-msg.pan_pos_cmd
+        # self.cams[cam_id].visca_obj.closed_tilt_goal=0.0
+        self.cams[cam_id].visca_obj.closed_tilt_goal=msg.tilt_pos_cmd
+        self.cams[cam_id].zoom_pos_cmd=msg.zoom_pos_cmd
+        self.cams[cam_id].pan_speed_cmd=msg.pan_speed_cmd
+        self.cams[cam_id].tilt_speed_cmd=msg.tilt_speed_cmd
 
-    def img_callback(self,msg):
-        img=self.cv_bridge.imgmsg_to_cv2(msg)
-        gray=cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-        try:
-            detections=self.Detector.detect(gray)
-        except Exception as e:
-            print(f"no tag {e}")
-            detections=[]
-        if len(detections)>0 and self.track_state==1:
-            tag_size=cv.norm(detections[0].corners[0]-detections[0].corners[1])
-            x=detections[0].center[0]
-            y=detections[0].center[1]
-            x_offset=x-april_target_x
-            y_offset=y-april_target_y
-            pan=.05*x_offset
-            tilt=.05*y_offset
-            pan=min(max(pan,-18),18)
-            tilt=min(max(tilt,-18),18)
-            cam.move(int(pan),int(tilt))
-            size_dif=size_target-tag_size
-            cam.zoom(int(max(min(7,size_dif*.1),-7)))
-            self.last_tag=time.time()
+        if msg.control_mode==0:
+            pass
+        elif msg.control_mode==1:
+            
+            self.cams[cam_id].visca_obj.move(int(msg.pan_speed_cmd),int(msg.tilt_speed_cmd))
+            cmd=msg.zoom_speed_cmd
+            if int(msg.zoom_speed_cmd*7) != 0 or self.cams[cam_id].pzoom!=0:
+                self.cams[cam_id].visca_obj.zoom_speed(int(msg.zoom_speed_cmd*7))
+            pass
+        elif msg.control_mode ==2:
+            # if self.cams[cam_id].visca_obj.zoom < msg.zoom_pos_cmd - 5:
+            #     self.cams[cam_id].visca_obj.zoom_speed(4)
+            #     self.get_logger().info("1")
 
+            # elif self.cams[cam_id].visca_obj.zoom > msg.zoom_pos_cmd + 5:
+            #     self.cams[cam_id].visca_obj.zoom_speed(-4)
+            #     self.get_logger().info("-1")
 
-            print(f"tag x: {x} y: {y} size: {tag_size} pan: {pan} tilt: {tilt}")
-
-    def loss_timer_callback(self):
-        if time.time()-self.last_tag >+.25 and self.track_state==1:
-            cam.move(0,0)
-            cam.zoom(-2)
-        
-
-
-
-
-
-
-        
-        
-
+            # else:
+            #     self.cams[cam_id].visca_obj.zoom_speed(0)
+            #     self.get_logger().info("0")
+            
+            self.cams[cam_id].visca_obj.closed_zoom_goal=msg.zoom_pos_cmd
+            self.get_logger().info(f"Cam: {cam_id} Zoom {self.cams[cam_id].visca_obj.zoom} Cmd: {msg.zoom_pos_cmd}")
+        elif msg.control_mode ==3:
+            self.cams[cam_id].visca_obj.abs_pos(int(msg.pan_speed_cmd),msg.pan_pos_cmd,msg.tilt_pos_cmd)
+            pass
+        elif msg.control_mode ==4:
+            pass
 
 
 def main(args=None):
