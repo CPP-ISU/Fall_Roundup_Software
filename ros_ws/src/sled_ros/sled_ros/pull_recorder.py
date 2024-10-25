@@ -24,7 +24,7 @@ class YourNode(Node):
     def sled_callback(self,msg):
         
         if self.pull_active:
-            row=[msg.distance,msg.force,msg.speed]
+            row=[msg.distance,msg.force,msg.speed,time.time()]
             for data in msg.data:
                 row.append(data)
             self.writer.writerow(row)

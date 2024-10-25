@@ -10,6 +10,9 @@ from threading import *
 
 rclpy.init()
 node=rclpy.create_node('overlays')
+SQL_IP="localhost"
+SQL_USER="software"
+SQL_PASSWORD="D@rkcyde15"
 
 class DataModel(QObject):
     dataChanged = pyqtSignal()
@@ -24,7 +27,7 @@ class DataModel(QObject):
         super().__init__()
         # Initialize data as an array of dictionaries
         self.get_teams()
-        self.get_pulls(0)
+        self.get_pulls(1)
         self.get_tractors()
         self.last_pulls(1)
         print("get pulls done")
@@ -81,10 +84,10 @@ class DataModel(QObject):
     def get_teams(self):
         self.teams={}
         localdb = mysql.connector.connect(
-            host="iqs-fallroundup.cvjcxenhbni5.us-east-2.rds.amazonaws.com",
-            user="admin",
-            password="darkcyde15",
-            database='fallrounudp'
+            host=SQL_IP,
+            user=SQL_USER,
+            password=SQL_PASSWORD,
+            database='fall_roundup'
             )
         localcursor=localdb.cursor()
         sql="SELECT team_id, team_name, team_abv, color FROM teams"
@@ -98,10 +101,10 @@ class DataModel(QObject):
     def get_tractors(self):
         self.tractors={}
         localdb = mysql.connector.connect(
-            host="iqs-fallroundup.cvjcxenhbni5.us-east-2.rds.amazonaws.com",
-            user="admin",
-            password="darkcyde15",
-            database='fallrounudp'
+            host=SQL_IP,
+            user=SQL_USER,
+            password=SQL_PASSWORD,
+            database='fall_roundup'
             )
         localcursor=localdb.cursor()
         sql="SELECT tractor_id, tractor_num, tractor_name, team_id FROM tractors"
@@ -115,10 +118,10 @@ class DataModel(QObject):
     def get_pulls(self,pull_class):
         self.pull_list=[]
         localdb = mysql.connector.connect(
-            host="iqs-fallroundup.cvjcxenhbni5.us-east-2.rds.amazonaws.com",
-            user="admin",
-            password="darkcyde15",
-            database='fallrounudp'
+            host=SQL_IP,
+            user=SQL_USER,
+            password=SQL_PASSWORD,
+            database='fall_roundup'
             )
         localcursor=localdb.cursor()
         sql=f"SELECT pull_id, team_id, tractor_id, final_dist FROM all_pull_results WHERE class = {pull_class}"
@@ -161,10 +164,10 @@ class DataModel(QObject):
         if msg.pullid !=self.current_pull_obj["id"]:
             pull_id=msg.pullid
             localdb = mysql.connector.connect(
-            host="iqs-fallroundup.cvjcxenhbni5.us-east-2.rds.amazonaws.com",
-            user="admin",
-            password="darkcyde15",
-            database='fallrounudp'
+            host=SQL_IP,
+            user=SQL_USER,
+            password=SQL_PASSWORD,
+            database='fall_roundup'
             )
             localcursor=localdb.cursor()
             sql=f"SELECT team_id, tractor_id, class FROM all_pull_results WHERE pull_id = {pull_id}"
@@ -200,10 +203,10 @@ class DataModel(QObject):
     
     def last_pulls(self,class_id):
         localdb = mysql.connector.connect(
-            host="iqs-fallroundup.cvjcxenhbni5.us-east-2.rds.amazonaws.com",
-            user="admin",
-            password="darkcyde15",
-            database='fallrounudp'
+            host=SQL_IP,
+            user=SQL_USER,
+            password=SQL_PASSWORD,
+            database='fall_roundup'
             )
         self.last_pulls_list=[]
         localcursor=localdb.cursor()

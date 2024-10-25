@@ -14,6 +14,8 @@ mydb = mysql.connector.connect(
   database='fallrounudp'
 )
 
+
+
 mycursor = mydb.cursor()
 rclpy.init()
 node=rclpy.create_node('sled_display')

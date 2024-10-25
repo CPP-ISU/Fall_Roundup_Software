@@ -7,6 +7,10 @@ import time
 import csv
 import mysql.connector
 
+SQL_IP="localhost"
+SQL_USER="software"
+SQL_PASSWORD="D@rkcyde15"
+
 class YourNode(Node):
     def __init__(self):
         super().__init__('your_node')
@@ -29,10 +33,10 @@ class YourNode(Node):
         if self.track_state!=1:
             self.update_list()
             localdb = mysql.connector.connect(
-            host="iqs-fallroundup.cvjcxenhbni5.us-east-2.rds.amazonaws.com",
-            user="admin",
-            password="darkcyde15",
-            database='fallrounudp'
+            host=SQL_IP,
+            user=SQL_USER,
+            password=SQL_PASSWORD,
+            database='fall_roundup'
             )
             localcursor = localdb.cursor()
             for key in self.pull_list:
@@ -44,14 +48,16 @@ class YourNode(Node):
                             data=[]
                             speed=[]
                             dist=[]
+                            times=[]
                             for row in reader:
                                 speed.append(float(row[2]))
                                 dist.append(float(row[0]))
-                                data.append((float(row[0]),float(row[1]),float(row[2]),key))
+                                data.append((float(row[0]),float(row[1]),float(row[2]),key,float(row[3])))
+                                times.append(float(row[3]))
                                 #data.append(row)
                                 #sql="INSERT INTO pull_data (distance, speed, draft_force) VALUES (%s, %s, %s)"
                                 #localcursor.execute(sql,(float(row[0]),float(row[1]),float(row[2])))
-                            sql="INSERT INTO pull_data (distance, speed, draft_force, pull_id) VALUES (%s, %s, %s, %s)"
+                            sql="INSERT INTO pull_data (distance, speed, draft_force, pull_id, time) VALUES (%s, %s, %s, %s, %s)"
                             localcursor.executemany(sql,data)
                             sql=f"UPDATE all_pull_results SET uploaded = 1 WHERE(pull_id ={key})"
                             localcursor.execute(sql)
@@ -59,6 +65,12 @@ class YourNode(Node):
                             sql=f"UPDATE all_pull_results SET max_speed = {max(speed)} WHERE(pull_id ={key})"
                             localcursor.execute(sql)
                             sql=f"UPDATE all_pull_results SET final_dist = {max(dist)} WHERE(pull_id ={key})"
+                            localcursor.execute(sql)
+                            
+                            
+                            sql=f"UPDATE all_pull_results SET start_time = {min(times)} WHERE(pull_id ={key})"
+                            localcursor.execute(sql)
+                            sql=f"UPDATE all_pull_results SET end_time = {max(times)} WHERE(pull_id ={key})"
                             localcursor.execute(sql)
                             localdb.commit()
                             print("upload complete")
@@ -74,10 +86,10 @@ class YourNode(Node):
     def update_list(self):
         self.pull_list={}
         localdb = mysql.connector.connect(
-        host="iqs-fallroundup.cvjcxenhbni5.us-east-2.rds.amazonaws.com",
-        user="admin",
-        password="darkcyde15",
-        database='fallrounudp'
+        host=SQL_IP,
+        user=SQL_USER,
+        password=SQL_PASSWORD,
+        database='fall_roundup'
         )
         localcursor = localdb.cursor()
         localcursor.execute("SELECT pull_id, uploaded FROM all_pull_results")

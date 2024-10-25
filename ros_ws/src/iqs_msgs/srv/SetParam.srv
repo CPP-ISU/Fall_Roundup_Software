@@ -1,0 +1,5 @@
+int8 param_num
+geometry_msgs/Point point
+
+---
+bool success
