@@ -49,7 +49,7 @@ class MyNode(Node):
         super().__init__('camera_controller')
         
         self.get_logger().info('camera controller startup')
-        cam=camera_obj("192.168.1.220",1259,None,50,50,10,0)
+        cam=camera_obj("192.168.0.220",1259,None,50,50,10,0)
         self.cams={}
         self.cams[0]=cam
         

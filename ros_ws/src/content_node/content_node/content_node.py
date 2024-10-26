@@ -6,6 +6,7 @@ from sensor_msgs.msg import Joy
 from sled_msgs.msg import Currentpull
 from std_srvs.srv import Empty
 import threading
+import time
 class MyNode(Node):
     def __init__(self):
        
@@ -20,6 +21,7 @@ class MyNode(Node):
         self.gopro_start_client=self.create_client(Empty,"Start_Recording_GoPro")
         self.gopro_stop_client=self.create_client(Empty,"Stop_Recording_GoPro")
         self.gopro_transfer_client=self.create_client(Empty,"Transfer_Footage")
+        self.obs_recording_client=self.create_client(Empty,"obs_toggle_recording")
         self.pull_task=0
         print("init thread")
         self.pull_thread=threading.Thread(target=self.pull_thread_func,daemon=True)
@@ -54,8 +56,15 @@ class MyNode(Node):
                 scene=String()
                 scene.data="replay"
                 self.obs_pub.publish(scene)
+                time.sleep(60)
+                self.obs_recording_client.call(Empty.Request())
             elif self.pull_task==2:
                 print("Starting")
+                
+                scene=String()
+                scene.data="Overlay"
+                self.obs_pub.publish(scene)
+                self.obs_recording_client.call(Empty.Request())
                 self.gopro_start_client.call(Empty.Request())
             self.task_flag.clear()
 

@@ -49,7 +49,7 @@ class DataModel(QObject):
         self.force=0.0
         self.max_force=0.0
         self.max_speed=0.0
-        
+        self.power=0.0
         self.pull_dist=123
         self.speed=0.0
         self.pull_durration=1.0
