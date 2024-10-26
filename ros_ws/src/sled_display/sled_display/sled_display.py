@@ -9,7 +9,7 @@ from sled_msgs.msg import Sled
 from sled_msgs.msg import Currentpull
 from threading import Thread
 import time
-SQL_IP="localhost"
+SQL_IP="192.168.0.103"
 SQL_USER="software"
 SQL_PASSWORD="D@rkcyde15"
 
